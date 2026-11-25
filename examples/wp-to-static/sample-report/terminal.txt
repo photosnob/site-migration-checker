@@ -1,0 +1,118 @@
+migcheck 0.1.0
+Sample: synthetic fixture, not a measurement of a live site.
+Synthetic fixture for the fictional Northwind Journal. URLs, HTML, and the clicks column are invented inputs, not a crawl or a traffic measurement.
+Mode: staging
+New host: https://new.journal.test
+Old URLs: 15
+Redirect rules: 16 (1 wildcard)
+Generated: 2026-11-25T01:14:50Z
+
+Readiness: BLOCKED
+Critical issues will drop or hide URLs. Do not cut over yet.
+
+Pages: 2 pass, 3 warn, 10 fail
+Issues: 9 critical, 8 high, 11 medium, 3 low, 1 info
+Exit: failure (--fail-on high)
+
+Issues
+CRITICAL  redirect_homepage
+  https://old.journal.test/blog/2019/08/01/old-seo-checklist/
+  Redirects to the homepage (https://new.journal.test/). Search engines treat many-to-one homepage redirects as soft 404s.
+CRITICAL  http_404
+  https://old.journal.test/pricing/
+  HTTP 404 at https://new.journal.test/pricing/.
+CRITICAL  http_404
+  https://old.journal.test/contact/
+  HTTP 404 at https://new.journal.test/contact/.
+CRITICAL  noindex
+  https://old.journal.test/blog/2017/07/04/thin-page/
+  https://new.journal.test/blog/thin-page/ sends noindex and will not be indexed.
+CRITICAL  http_404
+  https://old.journal.test/archive/field-notes/
+  HTTP 404 at https://new.journal.test/archive/field-notes/.
+CRITICAL  redirect_loop
+  https://old.journal.test/blog/2018/02/11/redirect-loops/
+  Redirect loop. Chain: 301 https://new.journal.test/blog/2018/02/11/redirect-loops/ -> https://new.journal.test/blog/2018/02/11/redirect-loops/.
+CRITICAL  http_5xx
+  https://old.journal.test/account/login/
+  HTTP 500 at https://new.journal.test/account/login/.
+CRITICAL  map_target_404
+  https://new.journal.test/offers/spring/
+  Redirect target https://new.journal.test/offers/spring/ returned 404 (rule line 16).
+CRITICAL  robots_disallow
+  https://new.journal.test/topics/seo/
+  robots.txt user-agent '*' disallows /topics/, which blocks https://new.journal.test/topics/seo/.
+HIGH  redirect_chain
+  https://old.journal.test/blog/2020/01/03/wordpress-to-jamstack/
+  Redirect chain of 2 hops. Collapse it to one 301.
+HIGH  temporary_redirect
+  https://old.journal.test/blog/2020/01/03/wordpress-to-jamstack/
+  A hop uses a temporary redirect (302, 303, or 307). Use 301 or 308 for a permanent move.
+HIGH  not_redirected
+  https://old.journal.test/category/seo/
+  No redirect was served. Expected https://new.journal.test/topics/seo/ and the server returned 200 for https://new.journal.test/category/seo/.
+HIGH  protocol_downgrade
+  https://old.journal.test/services/audits/
+  Landed on http://new.journal.test/services/seo-audits/ but the new host is https. The redirect drops the connection to cleartext.
+HIGH  canonical_mismatch
+  https://old.journal.test/blog/2017/07/04/thin-page/
+  Canonical is https://old.journal.test/blog/2017/07/04/thin-page/, which does not match https://new.journal.test/blog/thin-page/.
+HIGH  word_count_drop
+  https://old.journal.test/blog/2017/07/04/thin-page/
+  Word count fell from 167 to 18 (89% drop; threshold 30%).
+HIGH  map_cycle
+  /legacy/a
+  Redirect rules cycle: /legacy/a -> /legacy/b -> /legacy/a.
+HIGH  map_conflict
+  /services/audits/
+  Line 13 conflicts with line 12 for /services/audits/: /services/seo-audits/ (301) vs /services/site-audits/ (301). The earlier rule wins.
+MEDIUM  sitemap_missing
+  https://old.journal.test/blog/2019/08/01/old-seo-checklist/
+  https://new.journal.test/guides/seo-checklist/ returned 200 and is missing from the new sitemap.
+MEDIUM  sitemap_missing
+  https://old.journal.test/blog/2020/01/03/wordpress-to-jamstack/
+  https://new.journal.test/blog/wordpress-to-jamstack/ returned 200 and is missing from the new sitemap.
+MEDIUM  sitemap_missing
+  https://old.journal.test/contact/
+  https://new.journal.test/contact returned 200 and is missing from the new sitemap.
+MEDIUM  h1_missing
+  https://old.journal.test/blog/2017/07/04/thin-page/
+  The new page has no H1.
+MEDIUM  meta_description_missing
+  https://old.journal.test/blog/2017/07/04/thin-page/
+  The old page had a meta description and the new page does not.
+MEDIUM  sitemap_lists_noindex
+  https://old.journal.test/blog/2017/07/04/thin-page/
+  https://new.journal.test/blog/thin-page/ is in the new sitemap and sends noindex.
+MEDIUM  title_changed
+  https://old.journal.test/blog/2017/07/04/thin-page/
+  Title changed from 'A longer article about redirects' to 'Notes' (similarity 0.16).
+MEDIUM  sitemap_missing
+  https://old.journal.test/blog/2018/02/11/redirect-loops/
+  https://new.journal.test/blog/redirect-loops/ returned 200 and is missing from the new sitemap.
+MEDIUM  meta_refresh
+  https://old.journal.test/welcome.html
+  https://new.journal.test/welcome.html returns 200 and meta-refreshes to https://new.journal.test/about. Replace it with a 301.
+MEDIUM  sitemap_missing
+  https://old.journal.test/welcome.html
+  https://new.journal.test/welcome.html returned 200 and is missing from the new sitemap.
+MEDIUM  map_shadowed
+  /blog/2016/03/03/specific-post/
+  Line 20 (/blog/2016/03/03/specific-post/) is shadowed by line 19 (/blog/*) and will never run.
+LOW  canonical_missing
+  https://old.journal.test/about/
+  https://new.journal.test/about has no canonical link.
+LOW  trailing_slash_mismatch
+  https://old.journal.test/team/
+  Trailing slash differs. Expected https://new.journal.test/team/ and landed on https://new.journal.test/team.
+LOW  map_duplicate
+  /about/
+  Line 6 repeats line 5 (/about/).
+INFO  sitemap_extra
+  https://new.journal.test/plans/
+  2 new-sitemap URL(s) are not destinations of the old list: https://new.journal.test/plans/, https://new.journal.test/journal/field-notes/.
+
+Suggestions: 2
+Wrote report to examples/wp-to-static/sample-report
+HTML report: examples/wp-to-static/sample-report/index.html
+Suggested redirects: examples/wp-to-static/sample-report/_redirects
