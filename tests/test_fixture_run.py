@@ -2,11 +2,13 @@ import importlib.util
 import json
 import re
 import socket
-
-from tests.conftest import FIXTURE, REPO
+from pathlib import Path
 
 from migcheck.cli import build_config, main
 from migcheck.runner import execute
+
+REPO = Path(__file__).resolve().parents[1]
+FIXTURE = REPO / "examples" / "wp-to-static"
 
 _TIMESTAMP = re.compile(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z")
 
