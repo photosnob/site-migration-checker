@@ -1,0 +1,1134 @@
+{
+  "tool": "migcheck",
+  "version": "0.1.0",
+  "generated_at": "2026-11-25T01:14:50Z",
+  "sample": true,
+  "disclaimer": "Synthetic fixture for the fictional Northwind Journal. URLs, HTML, and the clicks column are invented inputs, not a crawl or a traffic measurement.",
+  "mode": "staging",
+  "new_host": "https://new.journal.test",
+  "inputs": [
+    "fixture: examples/wp-to-static",
+    "old sitemap: examples/wp-to-static/old-sitemap.xml",
+    "old csv: examples/wp-to-static/search-console-pages.csv",
+    "new host: https://new.journal.test",
+    "mode: staging",
+    "redirects: examples/wp-to-static/_redirects"
+  ],
+  "url_count": 15,
+  "rule_count": 16,
+  "wildcard_rules": 1,
+  "readiness": "BLOCKED",
+  "readiness_reason": "Critical issues will drop or hide URLs. Do not cut over yet.",
+  "counts": {
+    "critical": 9,
+    "high": 8,
+    "medium": 11,
+    "low": 3,
+    "info": 1
+  },
+  "fail_on": "high",
+  "page_results": {
+    "pass": 2,
+    "warn": 3,
+    "fail": 10
+  },
+  "issues": [
+    {
+      "code": "redirect_homepage",
+      "severity": "critical",
+      "source": "url",
+      "url": "https://old.journal.test/blog/2019/08/01/old-seo-checklist/",
+      "message": "Redirects to the homepage (https://new.journal.test/). Search engines treat many-to-one homepage redirects as soft 404s.",
+      "detail": "301 https://new.journal.test/blog/2019/08/01/old-seo-checklist/ -> https://new.journal.test/ | 200 https://new.journal.test/"
+    },
+    {
+      "code": "http_404",
+      "severity": "critical",
+      "source": "url",
+      "url": "https://old.journal.test/pricing/",
+      "message": "HTTP 404 at https://new.journal.test/pricing/.",
+      "detail": "404 https://new.journal.test/pricing/"
+    },
+    {
+      "code": "http_404",
+      "severity": "critical",
+      "source": "url",
+      "url": "https://old.journal.test/contact/",
+      "message": "HTTP 404 at https://new.journal.test/contact/.",
+      "detail": "404 https://new.journal.test/contact/"
+    },
+    {
+      "code": "noindex",
+      "severity": "critical",
+      "source": "content",
+      "url": "https://old.journal.test/blog/2017/07/04/thin-page/",
+      "message": "https://new.journal.test/blog/thin-page/ sends noindex and will not be indexed.",
+      "detail": ""
+    },
+    {
+      "code": "http_404",
+      "severity": "critical",
+      "source": "url",
+      "url": "https://old.journal.test/archive/field-notes/",
+      "message": "HTTP 404 at https://new.journal.test/archive/field-notes/.",
+      "detail": "404 https://new.journal.test/archive/field-notes/"
+    },
+    {
+      "code": "redirect_loop",
+      "severity": "critical",
+      "source": "url",
+      "url": "https://old.journal.test/blog/2018/02/11/redirect-loops/",
+      "message": "Redirect loop. Chain: 301 https://new.journal.test/blog/2018/02/11/redirect-loops/ -> https://new.journal.test/blog/2018/02/11/redirect-loops/.",
+      "detail": "301 https://new.journal.test/blog/2018/02/11/redirect-loops/ -> https://new.journal.test/blog/2018/02/11/redirect-loops/"
+    },
+    {
+      "code": "http_5xx",
+      "severity": "critical",
+      "source": "url",
+      "url": "https://old.journal.test/account/login/",
+      "message": "HTTP 500 at https://new.journal.test/account/login/.",
+      "detail": "500 https://new.journal.test/account/login/"
+    },
+    {
+      "code": "map_target_404",
+      "severity": "critical",
+      "source": "map",
+      "url": "https://new.journal.test/offers/spring/",
+      "message": "Redirect target https://new.journal.test/offers/spring/ returned 404 (rule line 16).",
+      "detail": "/promo/ /offers/spring/ 301"
+    },
+    {
+      "code": "robots_disallow",
+      "severity": "critical",
+      "source": "robots",
+      "url": "https://new.journal.test/topics/seo/",
+      "message": "robots.txt user-agent '*' disallows /topics/, which blocks https://new.journal.test/topics/seo/.",
+      "detail": ""
+    },
+    {
+      "code": "redirect_chain",
+      "severity": "high",
+      "source": "url",
+      "url": "https://old.journal.test/blog/2020/01/03/wordpress-to-jamstack/",
+      "message": "Redirect chain of 2 hops. Collapse it to one 301.",
+      "detail": "302 https://new.journal.test/blog/2020/01/03/wordpress-to-jamstack/ -> https://new.journal.test/blog/temp-wordpress/ | 301 https://new.journal.test/blog/temp-wordpress/ -> https://new.journal.test/blog/wordpress-to-jamstack/ | 200 https://new.journal.test/blog/wordpress-to-jamstack/"
+    },
+    {
+      "code": "temporary_redirect",
+      "severity": "high",
+      "source": "url",
+      "url": "https://old.journal.test/blog/2020/01/03/wordpress-to-jamstack/",
+      "message": "A hop uses a temporary redirect (302, 303, or 307). Use 301 or 308 for a permanent move.",
+      "detail": "302 https://new.journal.test/blog/2020/01/03/wordpress-to-jamstack/ -> https://new.journal.test/blog/temp-wordpress/ | 301 https://new.journal.test/blog/temp-wordpress/ -> https://new.journal.test/blog/wordpress-to-jamstack/ | 200 https://new.journal.test/blog/wordpress-to-jamstack/"
+    },
+    {
+      "code": "not_redirected",
+      "severity": "high",
+      "source": "url",
+      "url": "https://old.journal.test/category/seo/",
+      "message": "No redirect was served. Expected https://new.journal.test/topics/seo/ and the server returned 200 for https://new.journal.test/category/seo/.",
+      "detail": "200 https://new.journal.test/category/seo/"
+    },
+    {
+      "code": "protocol_downgrade",
+      "severity": "high",
+      "source": "url",
+      "url": "https://old.journal.test/services/audits/",
+      "message": "Landed on http://new.journal.test/services/seo-audits/ but the new host is https. The redirect drops the connection to cleartext.",
+      "detail": "301 https://new.journal.test/services/audits/ -> http://new.journal.test/services/seo-audits/ | 200 http://new.journal.test/services/seo-audits/"
+    },
+    {
+      "code": "canonical_mismatch",
+      "severity": "high",
+      "source": "content",
+      "url": "https://old.journal.test/blog/2017/07/04/thin-page/",
+      "message": "Canonical is https://old.journal.test/blog/2017/07/04/thin-page/, which does not match https://new.journal.test/blog/thin-page/.",
+      "detail": ""
+    },
+    {
+      "code": "word_count_drop",
+      "severity": "high",
+      "source": "content",
+      "url": "https://old.journal.test/blog/2017/07/04/thin-page/",
+      "message": "Word count fell from 167 to 18 (89% drop; threshold 30%).",
+      "detail": ""
+    },
+    {
+      "code": "map_cycle",
+      "severity": "high",
+      "source": "map",
+      "url": "/legacy/a",
+      "message": "Redirect rules cycle: /legacy/a -> /legacy/b -> /legacy/a.",
+      "detail": ""
+    },
+    {
+      "code": "map_conflict",
+      "severity": "high",
+      "source": "map",
+      "url": "/services/audits/",
+      "message": "Line 13 conflicts with line 12 for /services/audits/: /services/seo-audits/ (301) vs /services/site-audits/ (301). The earlier rule wins.",
+      "detail": "/services/audits/ /services/site-audits/ 301"
+    },
+    {
+      "code": "sitemap_missing",
+      "severity": "medium",
+      "source": "sitemap",
+      "url": "https://old.journal.test/blog/2019/08/01/old-seo-checklist/",
+      "message": "https://new.journal.test/guides/seo-checklist/ returned 200 and is missing from the new sitemap.",
+      "detail": ""
+    },
+    {
+      "code": "sitemap_missing",
+      "severity": "medium",
+      "source": "sitemap",
+      "url": "https://old.journal.test/blog/2020/01/03/wordpress-to-jamstack/",
+      "message": "https://new.journal.test/blog/wordpress-to-jamstack/ returned 200 and is missing from the new sitemap.",
+      "detail": ""
+    },
+    {
+      "code": "sitemap_missing",
+      "severity": "medium",
+      "source": "sitemap",
+      "url": "https://old.journal.test/contact/",
+      "message": "https://new.journal.test/contact returned 200 and is missing from the new sitemap.",
+      "detail": ""
+    },
+    {
+      "code": "h1_missing",
+      "severity": "medium",
+      "source": "content",
+      "url": "https://old.journal.test/blog/2017/07/04/thin-page/",
+      "message": "The new page has no H1.",
+      "detail": ""
+    },
+    {
+      "code": "meta_description_missing",
+      "severity": "medium",
+      "source": "content",
+      "url": "https://old.journal.test/blog/2017/07/04/thin-page/",
+      "message": "The old page had a meta description and the new page does not.",
+      "detail": "old: A long fixture description that the new template drops entirely from the page."
+    },
+    {
+      "code": "sitemap_lists_noindex",
+      "severity": "medium",
+      "source": "sitemap",
+      "url": "https://old.journal.test/blog/2017/07/04/thin-page/",
+      "message": "https://new.journal.test/blog/thin-page/ is in the new sitemap and sends noindex.",
+      "detail": ""
+    },
+    {
+      "code": "title_changed",
+      "severity": "medium",
+      "source": "content",
+      "url": "https://old.journal.test/blog/2017/07/04/thin-page/",
+      "message": "Title changed from 'A longer article about redirects' to 'Notes' (similarity 0.16).",
+      "detail": "old: A longer article about redirects | new: Notes"
+    },
+    {
+      "code": "sitemap_missing",
+      "severity": "medium",
+      "source": "sitemap",
+      "url": "https://old.journal.test/blog/2018/02/11/redirect-loops/",
+      "message": "https://new.journal.test/blog/redirect-loops/ returned 200 and is missing from the new sitemap.",
+      "detail": ""
+    },
+    {
+      "code": "meta_refresh",
+      "severity": "medium",
+      "source": "content",
+      "url": "https://old.journal.test/welcome.html",
+      "message": "https://new.journal.test/welcome.html returns 200 and meta-refreshes to https://new.journal.test/about. Replace it with a 301.",
+      "detail": ""
+    },
+    {
+      "code": "sitemap_missing",
+      "severity": "medium",
+      "source": "sitemap",
+      "url": "https://old.journal.test/welcome.html",
+      "message": "https://new.journal.test/welcome.html returned 200 and is missing from the new sitemap.",
+      "detail": ""
+    },
+    {
+      "code": "map_shadowed",
+      "severity": "medium",
+      "source": "map",
+      "url": "/blog/2016/03/03/specific-post/",
+      "message": "Line 20 (/blog/2016/03/03/specific-post/) is shadowed by line 19 (/blog/*) and will never run.",
+      "detail": "/blog/2016/03/03/specific-post/ /blog/specific-post/ 301"
+    },
+    {
+      "code": "canonical_missing",
+      "severity": "low",
+      "source": "content",
+      "url": "https://old.journal.test/about/",
+      "message": "https://new.journal.test/about has no canonical link.",
+      "detail": ""
+    },
+    {
+      "code": "trailing_slash_mismatch",
+      "severity": "low",
+      "source": "url",
+      "url": "https://old.journal.test/team/",
+      "message": "Trailing slash differs. Expected https://new.journal.test/team/ and landed on https://new.journal.test/team.",
+      "detail": "301 https://new.journal.test/team/ -> https://new.journal.test/team | 200 https://new.journal.test/team"
+    },
+    {
+      "code": "map_duplicate",
+      "severity": "low",
+      "source": "map",
+      "url": "/about/",
+      "message": "Line 6 repeats line 5 (/about/).",
+      "detail": "/about/ /about 301"
+    },
+    {
+      "code": "sitemap_extra",
+      "severity": "info",
+      "source": "sitemap",
+      "url": "https://new.journal.test/plans/",
+      "message": "2 new-sitemap URL(s) are not destinations of the old list: https://new.journal.test/plans/, https://new.journal.test/journal/field-notes/.",
+      "detail": ""
+    }
+  ],
+  "suggestions": [
+    {
+      "old_url": "https://old.journal.test/archive/field-notes/",
+      "candidate_url": "https://new.journal.test/journal/field-notes/",
+      "score": 1.0,
+      "via": "slug",
+      "old_label": "slug: field notes",
+      "candidate_label": "slug: field notes"
+    },
+    {
+      "old_url": "https://old.journal.test/pricing/",
+      "candidate_url": "https://new.journal.test/plans/",
+      "score": 0.8286,
+      "via": "title",
+      "old_label": "title: Pricing for the print edition",
+      "candidate_label": "title: Pricing for the print edition and archive"
+    }
+  ],
+  "rules": [
+    {
+      "line": 5,
+      "source": "/about/",
+      "target": "/about",
+      "status": 301,
+      "wildcard": false,
+      "unsupported": null
+    },
+    {
+      "line": 6,
+      "source": "/about/",
+      "target": "/about",
+      "status": 301,
+      "wildcard": false,
+      "unsupported": null
+    },
+    {
+      "line": 7,
+      "source": "/blog/2021/05/12/shipping-static/",
+      "target": "/blog/shipping-static/",
+      "status": 301,
+      "wildcard": false,
+      "unsupported": null
+    },
+    {
+      "line": 8,
+      "source": "/blog/2020/01/03/wordpress-to-jamstack/",
+      "target": "/blog/wordpress-to-jamstack/",
+      "status": 301,
+      "wildcard": false,
+      "unsupported": null
+    },
+    {
+      "line": 9,
+      "source": "/blog/2019/08/01/old-seo-checklist/",
+      "target": "/guides/seo-checklist/",
+      "status": 301,
+      "wildcard": false,
+      "unsupported": null
+    },
+    {
+      "line": 10,
+      "source": "/contact/",
+      "target": "/contact",
+      "status": 301,
+      "wildcard": false,
+      "unsupported": null
+    },
+    {
+      "line": 11,
+      "source": "/blog/2018/02/11/redirect-loops/",
+      "target": "/blog/redirect-loops/",
+      "status": 301,
+      "wildcard": false,
+      "unsupported": null
+    },
+    {
+      "line": 12,
+      "source": "/services/audits/",
+      "target": "/services/seo-audits/",
+      "status": 301,
+      "wildcard": false,
+      "unsupported": null
+    },
+    {
+      "line": 13,
+      "source": "/services/audits/",
+      "target": "/services/site-audits/",
+      "status": 301,
+      "wildcard": false,
+      "unsupported": null
+    },
+    {
+      "line": 14,
+      "source": "/category/seo/",
+      "target": "/topics/seo/",
+      "status": 301,
+      "wildcard": false,
+      "unsupported": null
+    },
+    {
+      "line": 15,
+      "source": "/blog/2017/07/04/thin-page/",
+      "target": "/blog/thin-page/",
+      "status": 301,
+      "wildcard": false,
+      "unsupported": null
+    },
+    {
+      "line": 16,
+      "source": "/promo/",
+      "target": "/offers/spring/",
+      "status": 301,
+      "wildcard": false,
+      "unsupported": null
+    },
+    {
+      "line": 17,
+      "source": "/legacy/a",
+      "target": "/legacy/b",
+      "status": 301,
+      "wildcard": false,
+      "unsupported": null
+    },
+    {
+      "line": 18,
+      "source": "/legacy/b",
+      "target": "/legacy/a",
+      "status": 301,
+      "wildcard": false,
+      "unsupported": null
+    },
+    {
+      "line": 19,
+      "source": "/blog/*",
+      "target": "/notes/:splat",
+      "status": 301,
+      "wildcard": true,
+      "unsupported": null
+    },
+    {
+      "line": 20,
+      "source": "/blog/2016/03/03/specific-post/",
+      "target": "/blog/specific-post/",
+      "status": 301,
+      "wildcard": false,
+      "unsupported": null
+    }
+  ],
+  "robots_body": "User-agent: *\nAllow: /topics/seo/public\nDisallow: /topics/\nDisallow: /wp-admin/\n\nSitemap: https://new.journal.test/sitemap.xml\n",
+  "new_sitemap_urls": [
+    "https://new.journal.test/",
+    "https://new.journal.test/about",
+    "https://new.journal.test/blog/shipping-static/",
+    "https://new.journal.test/blog/thin-page/",
+    "https://new.journal.test/topics/seo/",
+    "https://new.journal.test/plans/",
+    "https://new.journal.test/journal/field-notes/",
+    "https://new.journal.test/services/seo-audits/",
+    "https://new.journal.test/team"
+  ],
+  "extra_sitemap_urls": [
+    "https://new.journal.test/plans/",
+    "https://new.journal.test/journal/field-notes/"
+  ],
+  "pages": [
+    {
+      "old_url": "https://old.journal.test/",
+      "probe_url": "https://new.journal.test/",
+      "expected_url": "https://new.journal.test/",
+      "final_url": "https://new.journal.test/",
+      "result": "pass",
+      "clicks": 420,
+      "impressions": 12000,
+      "matched_rule": null,
+      "expected_status": 200,
+      "indexable_url": "https://new.journal.test/",
+      "hops": [
+        {
+          "url": "https://new.journal.test/",
+          "status": 200,
+          "location": null,
+          "error": null
+        }
+      ],
+      "issue_codes": [],
+      "old": {
+        "title": "Northwind Journal",
+        "description": "A fictional journal used only as a migcheck fixture.",
+        "h1": "Northwind Journal",
+        "h1_count": 1,
+        "canonical": "https://old.journal.test/",
+        "noindex": false,
+        "meta_refresh": null,
+        "word_count": 164
+      },
+      "new": {
+        "title": "Northwind Journal",
+        "description": "A fictional journal used only as a migcheck fixture.",
+        "h1": "Northwind Journal",
+        "h1_count": 1,
+        "canonical": "https://new.journal.test/",
+        "noindex": false,
+        "meta_refresh": null,
+        "word_count": 164
+      }
+    },
+    {
+      "old_url": "https://old.journal.test/about/",
+      "probe_url": "https://new.journal.test/about/",
+      "expected_url": "https://new.journal.test/about",
+      "final_url": "https://new.journal.test/about",
+      "result": "warn",
+      "clicks": 80,
+      "impressions": 2400,
+      "matched_rule": "/about/ /about 301",
+      "expected_status": 200,
+      "indexable_url": "https://new.journal.test/about",
+      "hops": [
+        {
+          "url": "https://new.journal.test/about/",
+          "status": 301,
+          "location": "https://new.journal.test/about",
+          "error": null
+        },
+        {
+          "url": "https://new.journal.test/about",
+          "status": 200,
+          "location": null,
+          "error": null
+        }
+      ],
+      "issue_codes": [
+        "canonical_missing"
+      ],
+      "old": {
+        "title": "About the journal",
+        "description": "How the fictional Northwind Journal is produced.",
+        "h1": "About",
+        "h1_count": 1,
+        "canonical": "https://old.journal.test/about/",
+        "noindex": false,
+        "meta_refresh": null,
+        "word_count": 163
+      },
+      "new": {
+        "title": "About the journal",
+        "description": "How the fictional Northwind Journal is produced.",
+        "h1": "About",
+        "h1_count": 1,
+        "canonical": null,
+        "noindex": false,
+        "meta_refresh": null,
+        "word_count": 163
+      }
+    },
+    {
+      "old_url": "https://old.journal.test/blog/2021/05/12/shipping-static/",
+      "probe_url": "https://new.journal.test/blog/2021/05/12/shipping-static/",
+      "expected_url": "https://new.journal.test/blog/shipping-static/",
+      "final_url": "https://new.journal.test/blog/shipping-static/",
+      "result": "pass",
+      "clicks": 260,
+      "impressions": 6400,
+      "matched_rule": "/blog/2021/05/12/shipping-static/ /blog/shipping-static/ 301",
+      "expected_status": 200,
+      "indexable_url": "https://new.journal.test/blog/shipping-static/",
+      "hops": [
+        {
+          "url": "https://new.journal.test/blog/2021/05/12/shipping-static/",
+          "status": 301,
+          "location": "https://new.journal.test/blog/shipping-static/",
+          "error": null
+        },
+        {
+          "url": "https://new.journal.test/blog/shipping-static/",
+          "status": 200,
+          "location": null,
+          "error": null
+        }
+      ],
+      "issue_codes": [],
+      "old": {
+        "title": "Shipping static",
+        "description": "A fixture article about moving a journal off WordPress.",
+        "h1": "Shipping static",
+        "h1_count": 1,
+        "canonical": "https://old.journal.test/blog/2021/05/12/shipping-static/",
+        "noindex": false,
+        "meta_refresh": null,
+        "word_count": 164
+      },
+      "new": {
+        "title": "Shipping static",
+        "description": "A fixture article about moving a journal off WordPress.",
+        "h1": "Shipping static",
+        "h1_count": 1,
+        "canonical": "https://new.journal.test/blog/shipping-static/",
+        "noindex": false,
+        "meta_refresh": null,
+        "word_count": 164
+      }
+    },
+    {
+      "old_url": "https://old.journal.test/blog/2020/01/03/wordpress-to-jamstack/",
+      "probe_url": "https://new.journal.test/blog/2020/01/03/wordpress-to-jamstack/",
+      "expected_url": "https://new.journal.test/blog/wordpress-to-jamstack/",
+      "final_url": "https://new.journal.test/blog/wordpress-to-jamstack/",
+      "result": "fail",
+      "clicks": 190,
+      "impressions": 4100,
+      "matched_rule": "/blog/2020/01/03/wordpress-to-jamstack/ /blog/wordpress-to-jamstack/ 301",
+      "expected_status": 200,
+      "indexable_url": "https://new.journal.test/blog/wordpress-to-jamstack/",
+      "hops": [
+        {
+          "url": "https://new.journal.test/blog/2020/01/03/wordpress-to-jamstack/",
+          "status": 302,
+          "location": "https://new.journal.test/blog/temp-wordpress/",
+          "error": null
+        },
+        {
+          "url": "https://new.journal.test/blog/temp-wordpress/",
+          "status": 301,
+          "location": "https://new.journal.test/blog/wordpress-to-jamstack/",
+          "error": null
+        },
+        {
+          "url": "https://new.journal.test/blog/wordpress-to-jamstack/",
+          "status": 200,
+          "location": null,
+          "error": null
+        }
+      ],
+      "issue_codes": [
+        "temporary_redirect",
+        "redirect_chain",
+        "sitemap_missing"
+      ],
+      "old": {
+        "title": "WordPress to a static site",
+        "description": "Fixture notes on permalink changes during a replatform.",
+        "h1": "WordPress to a static site",
+        "h1_count": 1,
+        "canonical": "https://old.journal.test/blog/2020/01/03/wordpress-to-jamstack/",
+        "noindex": false,
+        "meta_refresh": null,
+        "word_count": 167
+      },
+      "new": {
+        "title": "WordPress to a static site",
+        "description": "Fixture notes on permalink changes during a replatform.",
+        "h1": "WordPress to a static site",
+        "h1_count": 1,
+        "canonical": "https://new.journal.test/blog/wordpress-to-jamstack/",
+        "noindex": false,
+        "meta_refresh": null,
+        "word_count": 167
+      }
+    },
+    {
+      "old_url": "https://old.journal.test/blog/2019/08/01/old-seo-checklist/",
+      "probe_url": "https://new.journal.test/blog/2019/08/01/old-seo-checklist/",
+      "expected_url": "https://new.journal.test/guides/seo-checklist/",
+      "final_url": "https://new.journal.test/",
+      "result": "fail",
+      "clicks": 800,
+      "impressions": 15000,
+      "matched_rule": "/blog/2019/08/01/old-seo-checklist/ /guides/seo-checklist/ 301",
+      "expected_status": 200,
+      "indexable_url": "https://new.journal.test/guides/seo-checklist/",
+      "hops": [
+        {
+          "url": "https://new.journal.test/blog/2019/08/01/old-seo-checklist/",
+          "status": 301,
+          "location": "https://new.journal.test/",
+          "error": null
+        },
+        {
+          "url": "https://new.journal.test/",
+          "status": 200,
+          "location": null,
+          "error": null
+        }
+      ],
+      "issue_codes": [
+        "redirect_homepage",
+        "sitemap_missing"
+      ],
+      "old": {
+        "title": "An old SEO checklist",
+        "description": "Fixture checklist kept so a homepage redirect is visible.",
+        "h1": "An old SEO checklist",
+        "h1_count": 1,
+        "canonical": "https://old.journal.test/blog/2019/08/01/old-seo-checklist/",
+        "noindex": false,
+        "meta_refresh": null,
+        "word_count": 166
+      },
+      "new": {
+        "title": "An old SEO checklist",
+        "description": "Fixture checklist kept so a homepage redirect is visible.",
+        "h1": "An old SEO checklist",
+        "h1_count": 1,
+        "canonical": "https://new.journal.test/guides/seo-checklist/",
+        "noindex": false,
+        "meta_refresh": null,
+        "word_count": 166
+      }
+    },
+    {
+      "old_url": "https://old.journal.test/contact/",
+      "probe_url": "https://new.journal.test/contact/",
+      "expected_url": "https://new.journal.test/contact",
+      "final_url": "https://new.journal.test/contact/",
+      "result": "fail",
+      "clicks": 70,
+      "impressions": 1800,
+      "matched_rule": "/contact/ /contact 301",
+      "expected_status": 200,
+      "indexable_url": "https://new.journal.test/contact",
+      "hops": [
+        {
+          "url": "https://new.journal.test/contact/",
+          "status": 404,
+          "location": null,
+          "error": null
+        }
+      ],
+      "issue_codes": [
+        "http_404",
+        "sitemap_missing"
+      ],
+      "old": {
+        "title": "Contact",
+        "description": "Fixture contact page for a redirect that was not deployed.",
+        "h1": "Contact",
+        "h1_count": 1,
+        "canonical": "https://old.journal.test/contact/",
+        "noindex": false,
+        "meta_refresh": null,
+        "word_count": 163
+      },
+      "new": {
+        "title": "Contact",
+        "description": "Fixture contact page for a redirect that was not deployed.",
+        "h1": "Contact",
+        "h1_count": 1,
+        "canonical": "https://new.journal.test/contact",
+        "noindex": false,
+        "meta_refresh": null,
+        "word_count": 163
+      }
+    },
+    {
+      "old_url": "https://old.journal.test/blog/2018/02/11/redirect-loops/",
+      "probe_url": "https://new.journal.test/blog/2018/02/11/redirect-loops/",
+      "expected_url": "https://new.journal.test/blog/redirect-loops/",
+      "final_url": "https://new.journal.test/blog/2018/02/11/redirect-loops/",
+      "result": "fail",
+      "clicks": 30,
+      "impressions": 900,
+      "matched_rule": "/blog/2018/02/11/redirect-loops/ /blog/redirect-loops/ 301",
+      "expected_status": 200,
+      "indexable_url": "https://new.journal.test/blog/redirect-loops/",
+      "hops": [
+        {
+          "url": "https://new.journal.test/blog/2018/02/11/redirect-loops/",
+          "status": 301,
+          "location": "https://new.journal.test/blog/2018/02/11/redirect-loops/",
+          "error": null
+        }
+      ],
+      "issue_codes": [
+        "redirect_loop",
+        "sitemap_missing"
+      ],
+      "old": {
+        "title": "Redirect loops",
+        "description": "Fixture page whose new server redirects to itself.",
+        "h1": "Redirect loops",
+        "h1_count": 1,
+        "canonical": "https://old.journal.test/blog/2018/02/11/redirect-loops/",
+        "noindex": false,
+        "meta_refresh": null,
+        "word_count": 164
+      },
+      "new": {
+        "title": "Redirect loops",
+        "description": "Fixture page whose new server redirects to itself.",
+        "h1": "Redirect loops",
+        "h1_count": 1,
+        "canonical": "https://new.journal.test/blog/redirect-loops/",
+        "noindex": false,
+        "meta_refresh": null,
+        "word_count": 164
+      }
+    },
+    {
+      "old_url": "https://old.journal.test/services/audits/",
+      "probe_url": "https://new.journal.test/services/audits/",
+      "expected_url": "https://new.journal.test/services/seo-audits/",
+      "final_url": "http://new.journal.test/services/seo-audits/",
+      "result": "fail",
+      "clicks": 110,
+      "impressions": 3000,
+      "matched_rule": "/services/audits/ /services/seo-audits/ 301",
+      "expected_status": 200,
+      "indexable_url": "http://new.journal.test/services/seo-audits/",
+      "hops": [
+        {
+          "url": "https://new.journal.test/services/audits/",
+          "status": 301,
+          "location": "http://new.journal.test/services/seo-audits/",
+          "error": null
+        },
+        {
+          "url": "http://new.journal.test/services/seo-audits/",
+          "status": 200,
+          "location": null,
+          "error": null
+        }
+      ],
+      "issue_codes": [
+        "protocol_downgrade"
+      ],
+      "old": {
+        "title": "SEO audits",
+        "description": "Fixture service page with a protocol downgrade.",
+        "h1": "SEO audits",
+        "h1_count": 1,
+        "canonical": "https://old.journal.test/services/audits/",
+        "noindex": false,
+        "meta_refresh": null,
+        "word_count": 164
+      },
+      "new": {
+        "title": "SEO audits",
+        "description": "Fixture service page with a protocol downgrade.",
+        "h1": "SEO audits",
+        "h1_count": 1,
+        "canonical": "https://new.journal.test/services/seo-audits/",
+        "noindex": false,
+        "meta_refresh": null,
+        "word_count": 164
+      }
+    },
+    {
+      "old_url": "https://old.journal.test/category/seo/",
+      "probe_url": "https://new.journal.test/category/seo/",
+      "expected_url": "https://new.journal.test/topics/seo/",
+      "final_url": "https://new.journal.test/category/seo/",
+      "result": "fail",
+      "clicks": 150,
+      "impressions": 3600,
+      "matched_rule": "/category/seo/ /topics/seo/ 301",
+      "expected_status": 200,
+      "indexable_url": "https://new.journal.test/topics/seo/",
+      "hops": [
+        {
+          "url": "https://new.journal.test/category/seo/",
+          "status": 200,
+          "location": null,
+          "error": null
+        }
+      ],
+      "issue_codes": [
+        "not_redirected",
+        "robots_disallow"
+      ],
+      "old": {
+        "title": "SEO",
+        "description": "Fixture category page that should redirect to a topic.",
+        "h1": "SEO",
+        "h1_count": 1,
+        "canonical": "https://old.journal.test/category/seo/",
+        "noindex": false,
+        "meta_refresh": null,
+        "word_count": 163
+      },
+      "new": {
+        "title": "SEO",
+        "description": "Fixture category page that should redirect to a topic.",
+        "h1": "SEO",
+        "h1_count": 1,
+        "canonical": "https://new.journal.test/topics/seo/",
+        "noindex": false,
+        "meta_refresh": null,
+        "word_count": 163
+      }
+    },
+    {
+      "old_url": "https://old.journal.test/blog/2017/07/04/thin-page/",
+      "probe_url": "https://new.journal.test/blog/2017/07/04/thin-page/",
+      "expected_url": "https://new.journal.test/blog/thin-page/",
+      "final_url": "https://new.journal.test/blog/thin-page/",
+      "result": "fail",
+      "clicks": 55,
+      "impressions": 1600,
+      "matched_rule": "/blog/2017/07/04/thin-page/ /blog/thin-page/ 301",
+      "expected_status": 200,
+      "indexable_url": "https://new.journal.test/blog/thin-page/",
+      "hops": [
+        {
+          "url": "https://new.journal.test/blog/2017/07/04/thin-page/",
+          "status": 301,
+          "location": "https://new.journal.test/blog/thin-page/",
+          "error": null
+        },
+        {
+          "url": "https://new.journal.test/blog/thin-page/",
+          "status": 200,
+          "location": null,
+          "error": null
+        }
+      ],
+      "issue_codes": [
+        "noindex",
+        "canonical_mismatch",
+        "title_changed",
+        "meta_description_missing",
+        "h1_missing",
+        "word_count_drop",
+        "sitemap_lists_noindex"
+      ],
+      "old": {
+        "title": "A longer article about redirects",
+        "description": "A long fixture description that the new template drops entirely from the page.",
+        "h1": "A longer article about redirects",
+        "h1_count": 1,
+        "canonical": "https://old.journal.test/blog/2017/07/04/thin-page/",
+        "noindex": false,
+        "meta_refresh": null,
+        "word_count": 167
+      },
+      "new": {
+        "title": "Notes",
+        "description": null,
+        "h1": null,
+        "h1_count": 0,
+        "canonical": "https://old.journal.test/blog/2017/07/04/thin-page/",
+        "noindex": true,
+        "meta_refresh": null,
+        "word_count": 18
+      }
+    },
+    {
+      "old_url": "https://old.journal.test/pricing/",
+      "probe_url": "https://new.journal.test/pricing/",
+      "expected_url": "https://new.journal.test/pricing/",
+      "final_url": "https://new.journal.test/pricing/",
+      "result": "fail",
+      "clicks": 95,
+      "impressions": 2200,
+      "matched_rule": null,
+      "expected_status": 404,
+      "indexable_url": null,
+      "hops": [
+        {
+          "url": "https://new.journal.test/pricing/",
+          "status": 404,
+          "location": null,
+          "error": null
+        }
+      ],
+      "issue_codes": [
+        "http_404"
+      ],
+      "old": {
+        "title": "Pricing for the print edition",
+        "description": "Fixture pricing page with no redirect and no replacement path.",
+        "h1": "Pricing for the print edition",
+        "h1_count": 1,
+        "canonical": "https://old.journal.test/pricing/",
+        "noindex": false,
+        "meta_refresh": null,
+        "word_count": 167
+      },
+      "new": null
+    },
+    {
+      "old_url": "https://old.journal.test/welcome.html",
+      "probe_url": "https://new.journal.test/welcome.html",
+      "expected_url": "https://new.journal.test/welcome.html",
+      "final_url": "https://new.journal.test/welcome.html",
+      "result": "warn",
+      "clicks": 15,
+      "impressions": 400,
+      "matched_rule": null,
+      "expected_status": 200,
+      "indexable_url": "https://new.journal.test/welcome.html",
+      "hops": [
+        {
+          "url": "https://new.journal.test/welcome.html",
+          "status": 200,
+          "location": null,
+          "error": null
+        }
+      ],
+      "issue_codes": [
+        "meta_refresh",
+        "sitemap_missing"
+      ],
+      "old": {
+        "title": "Welcome",
+        "description": "Fixture page that still uses a meta refresh.",
+        "h1": "Welcome",
+        "h1_count": 1,
+        "canonical": "https://old.journal.test/welcome.html",
+        "noindex": false,
+        "meta_refresh": null,
+        "word_count": 163
+      },
+      "new": {
+        "title": "Welcome",
+        "description": "Fixture page that still uses a meta refresh.",
+        "h1": "Welcome",
+        "h1_count": 1,
+        "canonical": "https://new.journal.test/welcome.html",
+        "noindex": false,
+        "meta_refresh": "https://new.journal.test/about",
+        "word_count": 163
+      }
+    },
+    {
+      "old_url": "https://old.journal.test/account/login/",
+      "probe_url": "https://new.journal.test/account/login/",
+      "expected_url": "https://new.journal.test/account/login/",
+      "final_url": "https://new.journal.test/account/login/",
+      "result": "fail",
+      "clicks": 5,
+      "impressions": 200,
+      "matched_rule": null,
+      "expected_status": 500,
+      "indexable_url": null,
+      "hops": [
+        {
+          "url": "https://new.journal.test/account/login/",
+          "status": 500,
+          "location": null,
+          "error": null
+        }
+      ],
+      "issue_codes": [
+        "http_5xx"
+      ],
+      "old": {
+        "title": "Account login",
+        "description": "Fixture account route that the static host answers with an error.",
+        "h1": "Account login",
+        "h1_count": 1,
+        "canonical": "https://old.journal.test/account/login/",
+        "noindex": false,
+        "meta_refresh": null,
+        "word_count": 164
+      },
+      "new": null
+    },
+    {
+      "old_url": "https://old.journal.test/team/",
+      "probe_url": "https://new.journal.test/team/",
+      "expected_url": "https://new.journal.test/team/",
+      "final_url": "https://new.journal.test/team",
+      "result": "warn",
+      "clicks": 22,
+      "impressions": 700,
+      "matched_rule": null,
+      "expected_status": 200,
+      "indexable_url": "https://new.journal.test/team",
+      "hops": [
+        {
+          "url": "https://new.journal.test/team/",
+          "status": 301,
+          "location": "https://new.journal.test/team",
+          "error": null
+        },
+        {
+          "url": "https://new.journal.test/team",
+          "status": 200,
+          "location": null,
+          "error": null
+        }
+      ],
+      "issue_codes": [
+        "trailing_slash_mismatch"
+      ],
+      "old": {
+        "title": "The team",
+        "description": "Fixture team page that only changes its trailing slash.",
+        "h1": "The team",
+        "h1_count": 1,
+        "canonical": "https://old.journal.test/team/",
+        "noindex": false,
+        "meta_refresh": null,
+        "word_count": 164
+      },
+      "new": {
+        "title": "The team",
+        "description": "Fixture team page that only changes its trailing slash.",
+        "h1": "The team",
+        "h1_count": 1,
+        "canonical": "https://new.journal.test/team",
+        "noindex": false,
+        "meta_refresh": null,
+        "word_count": 164
+      }
+    },
+    {
+      "old_url": "https://old.journal.test/archive/field-notes/",
+      "probe_url": "https://new.journal.test/archive/field-notes/",
+      "expected_url": "https://new.journal.test/archive/field-notes/",
+      "final_url": "https://new.journal.test/archive/field-notes/",
+      "result": "fail",
+      "clicks": 44,
+      "impressions": 1100,
+      "matched_rule": null,
+      "expected_status": 404,
+      "indexable_url": null,
+      "hops": [
+        {
+          "url": "https://new.journal.test/archive/field-notes/",
+          "status": 404,
+          "location": null,
+          "error": null
+        }
+      ],
+      "issue_codes": [
+        "http_404"
+      ],
+      "old": {
+        "title": "Field notes from the pilot",
+        "description": "Fixture notes whose slug survives under a new directory.",
+        "h1": "Field notes from the pilot",
+        "h1_count": 1,
+        "canonical": "https://old.journal.test/archive/field-notes/",
+        "noindex": false,
+        "meta_refresh": null,
+        "word_count": 167
+      },
+      "new": null
+    }
+  ]
+}

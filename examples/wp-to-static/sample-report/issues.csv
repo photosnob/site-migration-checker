@@ -1,0 +1,33 @@
+severity,code,source,url,message,detail
+critical,redirect_homepage,url,https://old.journal.test/blog/2019/08/01/old-seo-checklist/,Redirects to the homepage (https://new.journal.test/). Search engines treat many-to-one homepage redirects as soft 404s.,301 https://new.journal.test/blog/2019/08/01/old-seo-checklist/ -> https://new.journal.test/ | 200 https://new.journal.test/
+critical,http_404,url,https://old.journal.test/pricing/,HTTP 404 at https://new.journal.test/pricing/.,404 https://new.journal.test/pricing/
+critical,http_404,url,https://old.journal.test/contact/,HTTP 404 at https://new.journal.test/contact/.,404 https://new.journal.test/contact/
+critical,noindex,content,https://old.journal.test/blog/2017/07/04/thin-page/,https://new.journal.test/blog/thin-page/ sends noindex and will not be indexed.,
+critical,http_404,url,https://old.journal.test/archive/field-notes/,HTTP 404 at https://new.journal.test/archive/field-notes/.,404 https://new.journal.test/archive/field-notes/
+critical,redirect_loop,url,https://old.journal.test/blog/2018/02/11/redirect-loops/,Redirect loop. Chain: 301 https://new.journal.test/blog/2018/02/11/redirect-loops/ -> https://new.journal.test/blog/2018/02/11/redirect-loops/.,301 https://new.journal.test/blog/2018/02/11/redirect-loops/ -> https://new.journal.test/blog/2018/02/11/redirect-loops/
+critical,http_5xx,url,https://old.journal.test/account/login/,HTTP 500 at https://new.journal.test/account/login/.,500 https://new.journal.test/account/login/
+critical,map_target_404,map,https://new.journal.test/offers/spring/,Redirect target https://new.journal.test/offers/spring/ returned 404 (rule line 16).,/promo/ /offers/spring/ 301
+critical,robots_disallow,robots,https://new.journal.test/topics/seo/,"robots.txt user-agent '*' disallows /topics/, which blocks https://new.journal.test/topics/seo/.",
+high,redirect_chain,url,https://old.journal.test/blog/2020/01/03/wordpress-to-jamstack/,Redirect chain of 2 hops. Collapse it to one 301.,302 https://new.journal.test/blog/2020/01/03/wordpress-to-jamstack/ -> https://new.journal.test/blog/temp-wordpress/ | 301 https://new.journal.test/blog/temp-wordpress/ -> https://new.journal.test/blog/wordpress-to-jamstack/ | 200 https://new.journal.test/blog/wordpress-to-jamstack/
+high,temporary_redirect,url,https://old.journal.test/blog/2020/01/03/wordpress-to-jamstack/,"A hop uses a temporary redirect (302, 303, or 307). Use 301 or 308 for a permanent move.",302 https://new.journal.test/blog/2020/01/03/wordpress-to-jamstack/ -> https://new.journal.test/blog/temp-wordpress/ | 301 https://new.journal.test/blog/temp-wordpress/ -> https://new.journal.test/blog/wordpress-to-jamstack/ | 200 https://new.journal.test/blog/wordpress-to-jamstack/
+high,not_redirected,url,https://old.journal.test/category/seo/,No redirect was served. Expected https://new.journal.test/topics/seo/ and the server returned 200 for https://new.journal.test/category/seo/.,200 https://new.journal.test/category/seo/
+high,protocol_downgrade,url,https://old.journal.test/services/audits/,Landed on http://new.journal.test/services/seo-audits/ but the new host is https. The redirect drops the connection to cleartext.,301 https://new.journal.test/services/audits/ -> http://new.journal.test/services/seo-audits/ | 200 http://new.journal.test/services/seo-audits/
+high,canonical_mismatch,content,https://old.journal.test/blog/2017/07/04/thin-page/,"Canonical is https://old.journal.test/blog/2017/07/04/thin-page/, which does not match https://new.journal.test/blog/thin-page/.",
+high,word_count_drop,content,https://old.journal.test/blog/2017/07/04/thin-page/,Word count fell from 167 to 18 (89% drop; threshold 30%).,
+high,map_cycle,map,/legacy/a,Redirect rules cycle: /legacy/a -> /legacy/b -> /legacy/a.,
+high,map_conflict,map,/services/audits/,Line 13 conflicts with line 12 for /services/audits/: /services/seo-audits/ (301) vs /services/site-audits/ (301). The earlier rule wins.,/services/audits/ /services/site-audits/ 301
+medium,sitemap_missing,sitemap,https://old.journal.test/blog/2019/08/01/old-seo-checklist/,https://new.journal.test/guides/seo-checklist/ returned 200 and is missing from the new sitemap.,
+medium,sitemap_missing,sitemap,https://old.journal.test/blog/2020/01/03/wordpress-to-jamstack/,https://new.journal.test/blog/wordpress-to-jamstack/ returned 200 and is missing from the new sitemap.,
+medium,sitemap_missing,sitemap,https://old.journal.test/contact/,https://new.journal.test/contact returned 200 and is missing from the new sitemap.,
+medium,h1_missing,content,https://old.journal.test/blog/2017/07/04/thin-page/,The new page has no H1.,
+medium,meta_description_missing,content,https://old.journal.test/blog/2017/07/04/thin-page/,The old page had a meta description and the new page does not.,old: A long fixture description that the new template drops entirely from the page.
+medium,sitemap_lists_noindex,sitemap,https://old.journal.test/blog/2017/07/04/thin-page/,https://new.journal.test/blog/thin-page/ is in the new sitemap and sends noindex.,
+medium,title_changed,content,https://old.journal.test/blog/2017/07/04/thin-page/,Title changed from 'A longer article about redirects' to 'Notes' (similarity 0.16).,old: A longer article about redirects | new: Notes
+medium,sitemap_missing,sitemap,https://old.journal.test/blog/2018/02/11/redirect-loops/,https://new.journal.test/blog/redirect-loops/ returned 200 and is missing from the new sitemap.,
+medium,meta_refresh,content,https://old.journal.test/welcome.html,https://new.journal.test/welcome.html returns 200 and meta-refreshes to https://new.journal.test/about. Replace it with a 301.,
+medium,sitemap_missing,sitemap,https://old.journal.test/welcome.html,https://new.journal.test/welcome.html returned 200 and is missing from the new sitemap.,
+medium,map_shadowed,map,/blog/2016/03/03/specific-post/,Line 20 (/blog/2016/03/03/specific-post/) is shadowed by line 19 (/blog/*) and will never run.,/blog/2016/03/03/specific-post/ /blog/specific-post/ 301
+low,canonical_missing,content,https://old.journal.test/about/,https://new.journal.test/about has no canonical link.,
+low,trailing_slash_mismatch,url,https://old.journal.test/team/,Trailing slash differs. Expected https://new.journal.test/team/ and landed on https://new.journal.test/team.,301 https://new.journal.test/team/ -> https://new.journal.test/team | 200 https://new.journal.test/team
+low,map_duplicate,map,/about/,Line 6 repeats line 5 (/about/).,/about/ /about 301
+info,sitemap_extra,sitemap,https://new.journal.test/plans/,"2 new-sitemap URL(s) are not destinations of the old list: https://new.journal.test/plans/, https://new.journal.test/journal/field-notes/.",

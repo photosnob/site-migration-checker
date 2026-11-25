@@ -1,0 +1,429 @@
+{
+  "sample": true,
+  "disclaimer": "Synthetic fixture for the fictional Northwind Journal. URLs, HTML, and the clicks column are invented inputs, not a crawl or a traffic measurement.",
+  "old_host": "https://old.journal.test",
+  "new_host": "https://new.journal.test",
+  "mode": "staging",
+  "old_sitemap": "old-sitemap.xml",
+  "old_csv": "search-console-pages.csv",
+  "redirects": "_redirects",
+  "responses": [
+    {
+      "url": "https://old.journal.test/",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      },
+      "body_file": "bodies/old-00.html"
+    },
+    {
+      "url": "https://new.journal.test/",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      },
+      "body_file": "bodies/new-home.html"
+    },
+    {
+      "url": "https://old.journal.test/about/",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      },
+      "body_file": "bodies/old-01.html"
+    },
+    {
+      "url": "https://new.journal.test/about/",
+      "status": 301,
+      "headers": {
+        "content-type": "text/plain",
+        "location": "/about"
+      },
+      "body": ""
+    },
+    {
+      "url": "https://new.journal.test/about",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      },
+      "body_file": "bodies/new-about.html"
+    },
+    {
+      "url": "https://old.journal.test/blog/2021/05/12/shipping-static/",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      },
+      "body_file": "bodies/old-02.html"
+    },
+    {
+      "url": "https://new.journal.test/blog/2021/05/12/shipping-static/",
+      "status": 301,
+      "headers": {
+        "content-type": "text/plain",
+        "location": "/blog/shipping-static/"
+      },
+      "body": ""
+    },
+    {
+      "url": "https://new.journal.test/blog/shipping-static/",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      },
+      "body_file": "bodies/new-shipping.html"
+    },
+    {
+      "url": "https://old.journal.test/blog/2020/01/03/wordpress-to-jamstack/",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      },
+      "body_file": "bodies/old-03.html"
+    },
+    {
+      "url": "https://new.journal.test/blog/2020/01/03/wordpress-to-jamstack/",
+      "status": 302,
+      "headers": {
+        "content-type": "text/plain",
+        "location": "/blog/temp-wordpress/"
+      },
+      "body": ""
+    },
+    {
+      "url": "https://new.journal.test/blog/temp-wordpress/",
+      "status": 301,
+      "headers": {
+        "content-type": "text/plain",
+        "location": "/blog/wordpress-to-jamstack/"
+      },
+      "body": ""
+    },
+    {
+      "url": "https://new.journal.test/blog/wordpress-to-jamstack/",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      },
+      "body_file": "bodies/new-jamstack.html"
+    },
+    {
+      "url": "https://old.journal.test/blog/2019/08/01/old-seo-checklist/",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      },
+      "body_file": "bodies/old-04.html"
+    },
+    {
+      "url": "https://new.journal.test/blog/2019/08/01/old-seo-checklist/",
+      "status": 301,
+      "headers": {
+        "content-type": "text/plain",
+        "location": "/"
+      },
+      "body": ""
+    },
+    {
+      "url": "https://new.journal.test/guides/seo-checklist/",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      },
+      "body_file": "bodies/new-guide.html"
+    },
+    {
+      "url": "https://old.journal.test/contact/",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      },
+      "body_file": "bodies/old-05.html"
+    },
+    {
+      "url": "https://new.journal.test/contact/",
+      "status": 404,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      },
+      "body": "<html><title>Missing</title><body>missing</body></html>"
+    },
+    {
+      "url": "https://new.journal.test/contact",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      },
+      "body_file": "bodies/new-contact.html"
+    },
+    {
+      "url": "https://old.journal.test/blog/2018/02/11/redirect-loops/",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      },
+      "body_file": "bodies/old-06.html"
+    },
+    {
+      "url": "https://new.journal.test/blog/2018/02/11/redirect-loops/",
+      "status": 301,
+      "headers": {
+        "content-type": "text/plain",
+        "location": "https://new.journal.test/blog/2018/02/11/redirect-loops/"
+      },
+      "body": ""
+    },
+    {
+      "url": "https://new.journal.test/blog/redirect-loops/",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      },
+      "body_file": "bodies/new-loops.html"
+    },
+    {
+      "url": "https://old.journal.test/services/audits/",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      },
+      "body_file": "bodies/old-07.html"
+    },
+    {
+      "url": "https://new.journal.test/services/audits/",
+      "status": 301,
+      "headers": {
+        "content-type": "text/plain",
+        "location": "http://new.journal.test/services/seo-audits/"
+      },
+      "body": ""
+    },
+    {
+      "url": "http://new.journal.test/services/seo-audits/",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      },
+      "body_file": "bodies/new-audits-http.html"
+    },
+    {
+      "url": "https://old.journal.test/category/seo/",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      },
+      "body_file": "bodies/old-08.html"
+    },
+    {
+      "url": "https://new.journal.test/category/seo/",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      },
+      "body_file": "bodies/new-category-stale.html"
+    },
+    {
+      "url": "https://new.journal.test/topics/seo/",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      },
+      "body_file": "bodies/new-topics.html"
+    },
+    {
+      "url": "https://old.journal.test/blog/2017/07/04/thin-page/",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      },
+      "body_file": "bodies/old-09.html"
+    },
+    {
+      "url": "https://new.journal.test/blog/2017/07/04/thin-page/",
+      "status": 301,
+      "headers": {
+        "content-type": "text/plain",
+        "location": "/blog/thin-page/"
+      },
+      "body": ""
+    },
+    {
+      "url": "https://new.journal.test/blog/thin-page/",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      },
+      "body_file": "bodies/new-thin.html"
+    },
+    {
+      "url": "https://old.journal.test/pricing/",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      },
+      "body_file": "bodies/old-10.html"
+    },
+    {
+      "url": "https://new.journal.test/pricing/",
+      "status": 404,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      },
+      "body": "<html><title>Missing</title><body>missing</body></html>"
+    },
+    {
+      "url": "https://old.journal.test/welcome.html",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      },
+      "body_file": "bodies/old-11.html"
+    },
+    {
+      "url": "https://new.journal.test/welcome.html",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      },
+      "body_file": "bodies/new-welcome.html"
+    },
+    {
+      "url": "https://old.journal.test/account/login/",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      },
+      "body_file": "bodies/old-12.html"
+    },
+    {
+      "url": "https://new.journal.test/account/login/",
+      "status": 500,
+      "headers": {
+        "content-type": "text/plain"
+      },
+      "body": "fixture error"
+    },
+    {
+      "url": "https://old.journal.test/team/",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      },
+      "body_file": "bodies/old-13.html"
+    },
+    {
+      "url": "https://new.journal.test/team/",
+      "status": 301,
+      "headers": {
+        "content-type": "text/plain",
+        "location": "/team"
+      },
+      "body": ""
+    },
+    {
+      "url": "https://new.journal.test/team",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      },
+      "body_file": "bodies/new-team.html"
+    },
+    {
+      "url": "https://old.journal.test/archive/field-notes/",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      },
+      "body_file": "bodies/old-14.html"
+    },
+    {
+      "url": "https://new.journal.test/archive/field-notes/",
+      "status": 404,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      },
+      "body": "<html><title>Missing</title><body>missing</body></html>"
+    },
+    {
+      "url": "https://new.journal.test/plans/",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      },
+      "body_file": "bodies/new-plans.html"
+    },
+    {
+      "url": "https://new.journal.test/journal/field-notes/",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      },
+      "body_file": "bodies/new-field-notes.html"
+    },
+    {
+      "url": "https://new.journal.test/services/seo-audits/",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      },
+      "body_file": "bodies/new-seo-audits.html"
+    },
+    {
+      "url": "https://new.journal.test/services/site-audits/",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      },
+      "body_file": "bodies/new-site-audits.html"
+    },
+    {
+      "url": "https://new.journal.test/legacy/a",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      },
+      "body_file": "bodies/new-legacy-a.html"
+    },
+    {
+      "url": "https://new.journal.test/legacy/b",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      },
+      "body_file": "bodies/new-legacy-b.html"
+    },
+    {
+      "url": "https://new.journal.test/blog/specific-post/",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      },
+      "body_file": "bodies/new-specific.html"
+    },
+    {
+      "url": "https://new.journal.test/offers/spring/",
+      "status": 404,
+      "headers": {
+        "content-type": "text/plain"
+      },
+      "body": "missing"
+    },
+    {
+      "url": "https://new.journal.test/sitemap.xml",
+      "status": 200,
+      "headers": {
+        "content-type": "application/xml"
+      },
+      "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n  <url><loc>https://new.journal.test/</loc></url>\n  <url><loc>https://new.journal.test/about</loc></url>\n  <url><loc>https://new.journal.test/blog/shipping-static/</loc></url>\n  <url><loc>https://new.journal.test/blog/thin-page/</loc></url>\n  <url><loc>https://new.journal.test/topics/seo/</loc></url>\n  <url><loc>https://new.journal.test/plans/</loc></url>\n  <url><loc>https://new.journal.test/journal/field-notes/</loc></url>\n  <url><loc>https://new.journal.test/services/seo-audits/</loc></url>\n  <url><loc>https://new.journal.test/team</loc></url>\n</urlset>\n"
+    },
+    {
+      "url": "https://new.journal.test/robots.txt",
+      "status": 200,
+      "headers": {
+        "content-type": "text/plain; charset=utf-8"
+      },
+      "body": "User-agent: *\nAllow: /topics/seo/public\nDisallow: /topics/\nDisallow: /wp-admin/\n\nSitemap: https://new.journal.test/sitemap.xml\n"
+    }
+  ]
+}

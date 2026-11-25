@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>migcheck — BLOCKED</title>
+<style>
+:root {
+  --paper: #f4f0e6;
+  --ink: #1c1915;
+  --muted: #5c564c;
+  --line: #d8d0c2;
+  --card: #fffdf8;
+  --critical: #8d1d1d;
+  --high: #8a4b08;
+  --medium: #1f4b73;
+  --low: #2f5d45;
+  --info: #5c564c;
+  --pass: #1e6b45;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background: var(--paper);
+  font: 16px/1.5 "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  border-top: 8px solid var(--critical);
+}
+body.status-review { border-top-color: var(--high); }
+body.status-notes { border-top-color: var(--medium); }
+body.status-ready { border-top-color: var(--pass); }
+header, main, footer { width: min(1100px, calc(100% - 2rem)); margin: 0 auto; }
+header { padding: 2.5rem 0 1rem; }
+.mark { margin: 0; letter-spacing: 0.08em; text-transform: uppercase; font-size: 0.78rem; }
+.mark span { color: var(--muted); letter-spacing: 0.04em; }
+h1, h2, h3 { font-family: "Iowan Old Style", Palatino, "Palatino Linotype", Georgia, serif; font-weight: 600; }
+h1 { font-size: 2.4rem; line-height: 1.1; margin: 0.2rem 0 0.8rem; }
+h2 { margin-top: 2.2rem; }
+.readiness {
+  display: inline-block;
+  margin: 0.4rem 0;
+  padding: 0.15rem 0.55rem;
+  color: white;
+  background: var(--critical);
+  font-family: "Iowan Old Style", Palatino, Georgia, serif;
+  font-size: 1.8rem;
+  letter-spacing: 0.04em;
+}
+.readiness.review { background: var(--high); }
+.readiness.notes { background: var(--medium); }
+.readiness.ready { background: var(--pass); }
+.banner, .disclaimer { background: #fff4cc; border: 1px solid #e2c56a; padding: 0.7rem 0.9rem; }
+.reason { font-size: 1.05rem; }
+.meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.6rem 1rem; margin: 1.2rem 0; }
+.meta div { border-top: 1px solid var(--line); padding-top: 0.35rem; }
+.meta dt { color: var(--muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em; }
+.meta dd { margin: 0; }
+.counts, .inputs { padding-left: 1.1rem; }
+nav { position: sticky; top: 0; background: var(--paper); border-bottom: 1px solid var(--line); padding: 0.5rem 1rem; display: flex; flex-wrap: wrap; gap: 0.8rem; }
+nav a { color: var(--ink); }
+.issue, .page { background: var(--card); border: 1px solid var(--line); padding: 0.8rem 1rem; margin: 0.6rem 0; }
+.kicker { margin: 0 0 0.3rem; }
+.sev, .result { display: inline-block; padding: 0 0.35rem; border-radius: 2px; font-size: 0.75rem; letter-spacing: 0.04em; text-transform: uppercase; }
+.sev.critical, .result.fail { background: #f8d4d4; color: var(--critical); }
+.sev.high, .result.warn { background: #f8e4c8; color: var(--high); }
+.sev.medium { background: #d7e5f2; color: var(--medium); }
+.sev.low, .result.pass { background: #d7eadf; color: var(--low); }
+.sev.info { background: #ece7dc; color: var(--info); }
+.code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.source { color: var(--muted); margin-left: 0.35rem; font-size: 0.75rem; letter-spacing: 0.04em; text-transform: uppercase; }
+.url, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.86rem; overflow-wrap: anywhere; }
+.detail, .note { color: var(--muted); }
+.filter input { font: inherit; padding: 0.35rem 0.5rem; border: 1px solid var(--line); background: white; min-width: min(100%, 280px); }
+table { width: 100%; border-collapse: collapse; background: var(--card); font-size: 0.92rem; }
+th, td { border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; padding: 0.45rem 0.5rem; }
+th { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.03em; color: var(--muted); }
+.glossary { display: grid; grid-template-columns: minmax(10rem, 16rem) 1fr; gap: 0.35rem 1rem; }
+.glossary dt { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 0.86rem; }
+.glossary dd { margin: 0; }
+footer { color: var(--muted); padding: 2rem 0 3rem; font-size: 0.9rem; }
+@media print {
+  nav, .filter { display: none; }
+  body { background: white; }
+  .issue, .page, table { break-inside: avoid; }
+}
+</style>
+</head>
+<body class="status-blocked">
+
+<header>
+  <p class="mark">migcheck <span>migration readiness</span></p>
+  <h1>Go-live readiness</h1>
+  <p class="banner">SAMPLE. Synthetic fixture. These findings are not a measurement of a live site.</p>
+  <p class="readiness blocked">BLOCKED</p>
+  <p class="reason">Critical issues will drop or hide URLs. Do not cut over yet.</p>
+  <p class='disclaimer'>Synthetic fixture for the fictional Northwind Journal. URLs, HTML, and the clicks column are invented inputs, not a crawl or a traffic measurement.</p>
+  <dl class="meta">
+    <div><dt>Mode</dt><dd>staging</dd></div>
+    <div><dt>New host</dt><dd>https://new.journal.test</dd></div>
+    <div><dt>Old URLs</dt><dd>15</dd></div>
+    <div><dt>Rules</dt><dd>16 (1 wildcard)</dd></div>
+    <div><dt>Pages</dt><dd>2 pass · 3 warn · 10 fail</dd></div>
+    <div><dt>Generated</dt><dd>2026-11-25T01:14:50Z</dd></div>
+  </dl>
+  <ul class="counts"><li><span class='sev critical'>critical</span> 9</li><li><span class='sev high'>high</span> 8</li><li><span class='sev medium'>medium</span> 11</li><li><span class='sev low'>low</span> 3</li><li><span class='sev info'>info</span> 1</li></ul>
+  <h2>Inputs</h2>
+  <ul class="inputs"><li>fixture: examples/wp-to-static</li><li>old sitemap: examples/wp-to-static/old-sitemap.xml</li><li>old csv: examples/wp-to-static/search-console-pages.csv</li><li>new host: https://new.journal.test</li><li>mode: staging</li><li>redirects: examples/wp-to-static/_redirects</li></ul>
+</header>
+
+<nav>
+<a href="#issues">Issues</a>
+<a href="#pages">Pages</a>
+<a href="#map">Redirect map</a>
+<a href="#sitemap">Sitemap</a>
+<a href="#robots">Robots</a>
+<a href="#suggestions">Suggestions</a>
+<a href="#method">Method</a>
+</nav>
+<main>
+
+<section id="issues">
+  <h2>Issues</h2>
+  <label class="filter">Filter <input id="q" type="search" placeholder="URL, code, or message"></label>
+  <div class="issue-list">
+<article class="issue" data-filter="critical redirect_homepage https://old.journal.test/blog/2019/08/01/old-seo-checklist/ redirects to the homepage (https://new.journal.test/). search engines treat many-to-one homepage redirects as soft 404s. 301 https://new.journal.test/blog/2019/08/01/old-seo-checklist/ -&gt; https://new.journal.test/ | 200 https://new.journal.test/">
+  <p class="kicker"><span class="sev critical">critical</span>
+  <span class="code">redirect_homepage</span>
+  <span class="source">url</span></p>
+  <p class='url'>https://old.journal.test/blog/2019/08/01/old-seo-checklist/</p>
+  <p>Redirects to the homepage (https://new.journal.test/). Search engines treat many-to-one homepage redirects as soft 404s.</p>
+  <p class='detail'>301 https://new.journal.test/blog/2019/08/01/old-seo-checklist/ -&gt; https://new.journal.test/ | 200 https://new.journal.test/</p>
+</article>
+
+
+<article class="issue" data-filter="critical http_404 https://old.journal.test/pricing/ http 404 at https://new.journal.test/pricing/. 404 https://new.journal.test/pricing/">
+  <p class="kicker"><span class="sev critical">critical</span>
+  <span class="code">http_404</span>
+  <span class="source">url</span></p>
+  <p class='url'>https://old.journal.test/pricing/</p>
+  <p>HTTP 404 at https://new.journal.test/pricing/.</p>
+  <p class='detail'>404 https://new.journal.test/pricing/</p>
+</article>
+
+
+<article class="issue" data-filter="critical http_404 https://old.journal.test/contact/ http 404 at https://new.journal.test/contact/. 404 https://new.journal.test/contact/">
+  <p class="kicker"><span class="sev critical">critical</span>
+  <span class="code">http_404</span>
+  <span class="source">url</span></p>
+  <p class='url'>https://old.journal.test/contact/</p>
+  <p>HTTP 404 at https://new.journal.test/contact/.</p>
+  <p class='detail'>404 https://new.journal.test/contact/</p>
+</article>
+
+
+<article class="issue" data-filter="critical noindex https://old.journal.test/blog/2017/07/04/thin-page/ https://new.journal.test/blog/thin-page/ sends noindex and will not be indexed. ">
+  <p class="kicker"><span class="sev critical">critical</span>
+  <span class="code">noindex</span>
+  <span class="source">content</span></p>
+  <p class='url'>https://old.journal.test/blog/2017/07/04/thin-page/</p>
+  <p>https://new.journal.test/blog/thin-page/ sends noindex and will not be indexed.</p>
+  
+</article>
+
+
+<article class="issue" data-filter="critical http_404 https://old.journal.test/archive/field-notes/ http 404 at https://new.journal.test/archive/field-notes/. 404 https://new.journal.test/archive/field-notes/">
+  <p class="kicker"><span class="sev critical">critical</span>
+  <span class="code">http_404</span>
+  <span class="source">url</span></p>
+  <p class='url'>https://old.journal.test/archive/field-notes/</p>
+  <p>HTTP 404 at https://new.journal.test/archive/field-notes/.</p>
+  <p class='detail'>404 https://new.journal.test/archive/field-notes/</p>
+</article>
+
+
+<article class="issue" data-filter="critical redirect_loop https://old.journal.test/blog/2018/02/11/redirect-loops/ redirect loop. chain: 301 https://new.journal.test/blog/2018/02/11/redirect-loops/ -&gt; https://new.journal.test/blog/2018/02/11/redirect-loops/. 301 https://new.journal.test/blog/2018/02/11/redirect-loops/ -&gt; https://new.journal.test/blog/2018/02/11/redirect-loops/">
+  <p class="kicker"><span class="sev critical">critical</span>
+  <span class="code">redirect_loop</span>
+  <span class="source">url</span></p>
+  <p class='url'>https://old.journal.test/blog/2018/02/11/redirect-loops/</p>
+  <p>Redirect loop. Chain: 301 https://new.journal.test/blog/2018/02/11/redirect-loops/ -&gt; https://new.journal.test/blog/2018/02/11/redirect-loops/.</p>
+  <p class='detail'>301 https://new.journal.test/blog/2018/02/11/redirect-loops/ -&gt; https://new.journal.test/blog/2018/02/11/redirect-loops/</p>
+</article>
+
+
+<article class="issue" data-filter="critical http_5xx https://old.journal.test/account/login/ http 500 at https://new.journal.test/account/login/. 500 https://new.journal.test/account/login/">
+  <p class="kicker"><span class="sev critical">critical</span>
+  <span class="code">http_5xx</span>
+  <span class="source">url</span></p>
+  <p class='url'>https://old.journal.test/account/login/</p>
+  <p>HTTP 500 at https://new.journal.test/account/login/.</p>
+  <p class='detail'>500 https://new.journal.test/account/login/</p>
+</article>
+
+
+<article class="issue" data-filter="critical map_target_404 https://new.journal.test/offers/spring/ redirect target https://new.journal.test/offers/spring/ returned 404 (rule line 16). /promo/ /offers/spring/ 301">
+  <p class="kicker"><span class="sev critical">critical</span>
+  <span class="code">map_target_404</span>
+  <span class="source">map</span></p>
+  <p class='url'>https://new.journal.test/offers/spring/</p>
+  <p>Redirect target https://new.journal.test/offers/spring/ returned 404 (rule line 16).</p>
+  <p class='detail'>/promo/ /offers/spring/ 301</p>
+</article>
+
+
+<article class="issue" data-filter="critical robots_disallow https://new.journal.test/topics/seo/ robots.txt user-agent &#x27;*&#x27; disallows /topics/, which blocks https://new.journal.test/topics/seo/. ">
+  <p class="kicker"><span class="sev critical">critical</span>
+  <span class="code">robots_disallow</span>
+  <span class="source">robots</span></p>
+  <p class='url'>https://new.journal.test/topics/seo/</p>
+  <p>robots.txt user-agent &#x27;*&#x27; disallows /topics/, which blocks https://new.journal.test/topics/seo/.</p>
+  
+</article>
+
+
+<article class="issue" data-filter="high redirect_chain https://old.journal.test/blog/2020/01/03/wordpress-to-jamstack/ redirect chain of 2 hops. collapse it to one 301. 302 https://new.journal.test/blog/2020/01/03/wordpress-to-jamstack/ -&gt; https://new.journal.test/blog/temp-wordpress/ | 301 https://new.journal.test/blog/temp-wordpress/ -&gt; https://new.journal.test/blog/wordpress-to-jamstack/ | 200 https://new.journal.test/blog/wordpress-to-jamstack/">
+  <p class="kicker"><span class="sev high">high</span>
+  <span class="code">redirect_chain</span>
+  <span class="source">url</span></p>
+  <p class='url'>https://old.journal.test/blog/2020/01/03/wordpress-to-jamstack/</p>
+  <p>Redirect chain of 2 hops. Collapse it to one 301.</p>
+  <p class='detail'>302 https://new.journal.test/blog/2020/01/03/wordpress-to-jamstack/ -&gt; https://new.journal.test/blog/temp-wordpress/ | 301 https://new.journal.test/blog/temp-wordpress/ -&gt; https://new.journal.test/blog/wordpress-to-jamstack/ | 200 https://new.journal.test/blog/wordpress-to-jamstack/</p>
+</article>
+
+
+<article class="issue" data-filter="high temporary_redirect https://old.journal.test/blog/2020/01/03/wordpress-to-jamstack/ a hop uses a temporary redirect (302, 303, or 307). use 301 or 308 for a permanent move. 302 https://new.journal.test/blog/2020/01/03/wordpress-to-jamstack/ -&gt; https://new.journal.test/blog/temp-wordpress/ | 301 https://new.journal.test/blog/temp-wordpress/ -&gt; https://new.journal.test/blog/wordpress-to-jamstack/ | 200 https://new.journal.test/blog/wordpress-to-jamstack/">
+  <p class="kicker"><span class="sev high">high</span>
+  <span class="code">temporary_redirect</span>
+  <span class="source">url</span></p>
+  <p class='url'>https://old.journal.test/blog/2020/01/03/wordpress-to-jamstack/</p>
+  <p>A hop uses a temporary redirect (302, 303, or 307). Use 301 or 308 for a permanent move.</p>
+  <p class='detail'>302 https://new.journal.test/blog/2020/01/03/wordpress-to-jamstack/ -&gt; https://new.journal.test/blog/temp-wordpress/ | 301 https://new.journal.test/blog/temp-wordpress/ -&gt; https://new.journal.test/blog/wordpress-to-jamstack/ | 200 https://new.journal.test/blog/wordpress-to-jamstack/</p>
+</article>
+
+
+<article class="issue" data-filter="high not_redirected https://old.journal.test/category/seo/ no redirect was served. expected https://new.journal.test/topics/seo/ and the server returned 200 for https://new.journal.test/category/seo/. 200 https://new.journal.test/category/seo/">
+  <p class="kicker"><span class="sev high">high</span>
+  <span class="code">not_redirected</span>
+  <span class="source">url</span></p>
+  <p class='url'>https://old.journal.test/category/seo/</p>
+  <p>No redirect was served. Expected https://new.journal.test/topics/seo/ and the server returned 200 for https://new.journal.test/category/seo/.</p>
+  <p class='detail'>200 https://new.journal.test/category/seo/</p>
+</article>
+
+
+<article class="issue" data-filter="high protocol_downgrade https://old.journal.test/services/audits/ landed on http://new.journal.test/services/seo-audits/ but the new host is https. the redirect drops the connection to cleartext. 301 https://new.journal.test/services/audits/ -&gt; http://new.journal.test/services/seo-audits/ | 200 http://new.journal.test/services/seo-audits/">
+  <p class="kicker"><span class="sev high">high</span>
+  <span class="code">protocol_downgrade</span>
+  <span class="source">url</span></p>
+  <p class='url'>https://old.journal.test/services/audits/</p>
+  <p>Landed on http://new.journal.test/services/seo-audits/ but the new host is https. The redirect drops the connection to cleartext.</p>
+  <p class='detail'>301 https://new.journal.test/services/audits/ -&gt; http://new.journal.test/services/seo-audits/ | 200 http://new.journal.test/services/seo-audits/</p>
+</article>
+
+
+<article class="issue" data-filter="high canonical_mismatch https://old.journal.test/blog/2017/07/04/thin-page/ canonical is https://old.journal.test/blog/2017/07/04/thin-page/, which does not match https://new.journal.test/blog/thin-page/. ">
+  <p class="kicker"><span class="sev high">high</span>
+  <span class="code">canonical_mismatch</span>
+  <span class="source">content</span></p>
+  <p class='url'>https://old.journal.test/blog/2017/07/04/thin-page/</p>
+  <p>Canonical is https://old.journal.test/blog/2017/07/04/thin-page/, which does not match https://new.journal.test/blog/thin-page/.</p>
+  
+</article>
+
+
+<article class="issue" data-filter="high word_count_drop https://old.journal.test/blog/2017/07/04/thin-page/ word count fell from 167 to 18 (89% drop; threshold 30%). ">
+  <p class="kicker"><span class="sev high">high</span>
+  <span class="code">word_count_drop</span>
+  <span class="source">content</span></p>
+  <p class='url'>https://old.journal.test/blog/2017/07/04/thin-page/</p>
+  <p>Word count fell from 167 to 18 (89% drop; threshold 30%).</p>
+  
+</article>
+
+
+<article class="issue" data-filter="high map_cycle /legacy/a redirect rules cycle: /legacy/a -&gt; /legacy/b -&gt; /legacy/a. ">
+  <p class="kicker"><span class="sev high">high</span>
+  <span class="code">map_cycle</span>
+  <span class="source">map</span></p>
+  <p class='url'>/legacy/a</p>
+  <p>Redirect rules cycle: /legacy/a -&gt; /legacy/b -&gt; /legacy/a.</p>
+  
+</article>
+
+
+<article class="issue" data-filter="high map_conflict /services/audits/ line 13 conflicts with line 12 for /services/audits/: /services/seo-audits/ (301) vs /services/site-audits/ (301). the earlier rule wins. /services/audits/ /services/site-audits/ 301">
+  <p class="kicker"><span class="sev high">high</span>
+  <span class="code">map_conflict</span>
+  <span class="source">map</span></p>
+  <p class='url'>/services/audits/</p>
+  <p>Line 13 conflicts with line 12 for /services/audits/: /services/seo-audits/ (301) vs /services/site-audits/ (301). The earlier rule wins.</p>
+  <p class='detail'>/services/audits/ /services/site-audits/ 301</p>
+</article>
+
+
+<article class="issue" data-filter="medium sitemap_missing https://old.journal.test/blog/2019/08/01/old-seo-checklist/ https://new.journal.test/guides/seo-checklist/ returned 200 and is missing from the new sitemap. ">
+  <p class="kicker"><span class="sev medium">medium</span>
+  <span class="code">sitemap_missing</span>
+  <span class="source">sitemap</span></p>
+  <p class='url'>https://old.journal.test/blog/2019/08/01/old-seo-checklist/</p>
+  <p>https://new.journal.test/guides/seo-checklist/ returned 200 and is missing from the new sitemap.</p>
+  
+</article>
+
+
+<article class="issue" data-filter="medium sitemap_missing https://old.journal.test/blog/2020/01/03/wordpress-to-jamstack/ https://new.journal.test/blog/wordpress-to-jamstack/ returned 200 and is missing from the new sitemap. ">
+  <p class="kicker"><span class="sev medium">medium</span>
+  <span class="code">sitemap_missing</span>
+  <span class="source">sitemap</span></p>
+  <p class='url'>https://old.journal.test/blog/2020/01/03/wordpress-to-jamstack/</p>
+  <p>https://new.journal.test/blog/wordpress-to-jamstack/ returned 200 and is missing from the new sitemap.</p>
+  
+</article>
+
+
+<article class="issue" data-filter="medium sitemap_missing https://old.journal.test/contact/ https://new.journal.test/contact returned 200 and is missing from the new sitemap. ">
+  <p class="kicker"><span class="sev medium">medium</span>
+  <span class="code">sitemap_missing</span>
+  <span class="source">sitemap</span></p>
+  <p class='url'>https://old.journal.test/contact/</p>
+  <p>https://new.journal.test/contact returned 200 and is missing from the new sitemap.</p>
+  
+</article>
+
+
+<article class="issue" data-filter="medium h1_missing https://old.journal.test/blog/2017/07/04/thin-page/ the new page has no h1. ">
+  <p class="kicker"><span class="sev medium">medium</span>
+  <span class="code">h1_missing</span>
+  <span class="source">content</span></p>
+  <p class='url'>https://old.journal.test/blog/2017/07/04/thin-page/</p>
+  <p>The new page has no H1.</p>
+  
+</article>
+
+
+<article class="issue" data-filter="medium meta_description_missing https://old.journal.test/blog/2017/07/04/thin-page/ the old page had a meta description and the new page does not. old: a long fixture description that the new template drops entirely from the page.">
+  <p class="kicker"><span class="sev medium">medium</span>
+  <span class="code">meta_description_missing</span>
+  <span class="source">content</span></p>
+  <p class='url'>https://old.journal.test/blog/2017/07/04/thin-page/</p>
+  <p>The old page had a meta description and the new page does not.</p>
+  <p class='detail'>old: A long fixture description that the new template drops entirely from the page.</p>
+</article>
+
+
+<article class="issue" data-filter="medium sitemap_lists_noindex https://old.journal.test/blog/2017/07/04/thin-page/ https://new.journal.test/blog/thin-page/ is in the new sitemap and sends noindex. ">
+  <p class="kicker"><span class="sev medium">medium</span>
+  <span class="code">sitemap_lists_noindex</span>
+  <span class="source">sitemap</span></p>
+  <p class='url'>https://old.journal.test/blog/2017/07/04/thin-page/</p>
+  <p>https://new.journal.test/blog/thin-page/ is in the new sitemap and sends noindex.</p>
+  
+</article>
+
+
+<article class="issue" data-filter="medium title_changed https://old.journal.test/blog/2017/07/04/thin-page/ title changed from &#x27;a longer article about redirects&#x27; to &#x27;notes&#x27; (similarity 0.16). old: a longer article about redirects | new: notes">
+  <p class="kicker"><span class="sev medium">medium</span>
+  <span class="code">title_changed</span>
+  <span class="source">content</span></p>
+  <p class='url'>https://old.journal.test/blog/2017/07/04/thin-page/</p>
+  <p>Title changed from &#x27;A longer article about redirects&#x27; to &#x27;Notes&#x27; (similarity 0.16).</p>
+  <p class='detail'>old: A longer article about redirects | new: Notes</p>
+</article>
+
+
+<article class="issue" data-filter="medium sitemap_missing https://old.journal.test/blog/2018/02/11/redirect-loops/ https://new.journal.test/blog/redirect-loops/ returned 200 and is missing from the new sitemap. ">
+  <p class="kicker"><span class="sev medium">medium</span>
+  <span class="code">sitemap_missing</span>
+  <span class="source">sitemap</span></p>
+  <p class='url'>https://old.journal.test/blog/2018/02/11/redirect-loops/</p>
+  <p>https://new.journal.test/blog/redirect-loops/ returned 200 and is missing from the new sitemap.</p>
+  
+</article>
+
+
+<article class="issue" data-filter="medium meta_refresh https://old.journal.test/welcome.html https://new.journal.test/welcome.html returns 200 and meta-refreshes to https://new.journal.test/about. replace it with a 301. ">
+  <p class="kicker"><span class="sev medium">medium</span>
+  <span class="code">meta_refresh</span>
+  <span class="source">content</span></p>
+  <p class='url'>https://old.journal.test/welcome.html</p>
+  <p>https://new.journal.test/welcome.html returns 200 and meta-refreshes to https://new.journal.test/about. Replace it with a 301.</p>
+  
+</article>
+
+
+<article class="issue" data-filter="medium sitemap_missing https://old.journal.test/welcome.html https://new.journal.test/welcome.html returned 200 and is missing from the new sitemap. ">
+  <p class="kicker"><span class="sev medium">medium</span>
+  <span class="code">sitemap_missing</span>
+  <span class="source">sitemap</span></p>
+  <p class='url'>https://old.journal.test/welcome.html</p>
+  <p>https://new.journal.test/welcome.html returned 200 and is missing from the new sitemap.</p>
+  
+</article>
+
+
+<article class="issue" data-filter="medium map_shadowed /blog/2016/03/03/specific-post/ line 20 (/blog/2016/03/03/specific-post/) is shadowed by line 19 (/blog/*) and will never run. /blog/2016/03/03/specific-post/ /blog/specific-post/ 301">
+  <p class="kicker"><span class="sev medium">medium</span>
+  <span class="code">map_shadowed</span>
+  <span class="source">map</span></p>
+  <p class='url'>/blog/2016/03/03/specific-post/</p>
+  <p>Line 20 (/blog/2016/03/03/specific-post/) is shadowed by line 19 (/blog/*) and will never run.</p>
+  <p class='detail'>/blog/2016/03/03/specific-post/ /blog/specific-post/ 301</p>
+</article>
+
+
+<article class="issue" data-filter="low canonical_missing https://old.journal.test/about/ https://new.journal.test/about has no canonical link. ">
+  <p class="kicker"><span class="sev low">low</span>
+  <span class="code">canonical_missing</span>
+  <span class="source">content</span></p>
+  <p class='url'>https://old.journal.test/about/</p>
+  <p>https://new.journal.test/about has no canonical link.</p>
+  
+</article>
+
+
+<article class="issue" data-filter="low trailing_slash_mismatch https://old.journal.test/team/ trailing slash differs. expected https://new.journal.test/team/ and landed on https://new.journal.test/team. 301 https://new.journal.test/team/ -&gt; https://new.journal.test/team | 200 https://new.journal.test/team">
+  <p class="kicker"><span class="sev low">low</span>
+  <span class="code">trailing_slash_mismatch</span>
+  <span class="source">url</span></p>
+  <p class='url'>https://old.journal.test/team/</p>
+  <p>Trailing slash differs. Expected https://new.journal.test/team/ and landed on https://new.journal.test/team.</p>
+  <p class='detail'>301 https://new.journal.test/team/ -&gt; https://new.journal.test/team | 200 https://new.journal.test/team</p>
+</article>
+
+
+<article class="issue" data-filter="low map_duplicate /about/ line 6 repeats line 5 (/about/). /about/ /about 301">
+  <p class="kicker"><span class="sev low">low</span>
+  <span class="code">map_duplicate</span>
+  <span class="source">map</span></p>
+  <p class='url'>/about/</p>
+  <p>Line 6 repeats line 5 (/about/).</p>
+  <p class='detail'>/about/ /about 301</p>
+</article>
+
+
+<article class="issue" data-filter="info sitemap_extra https://new.journal.test/plans/ 2 new-sitemap url(s) are not destinations of the old list: https://new.journal.test/plans/, https://new.journal.test/journal/field-notes/. ">
+  <p class="kicker"><span class="sev info">info</span>
+  <span class="code">sitemap_extra</span>
+  <span class="source">sitemap</span></p>
+  <p class='url'>https://new.journal.test/plans/</p>
+  <p>2 new-sitemap URL(s) are not destinations of the old list: https://new.journal.test/plans/, https://new.journal.test/journal/field-notes/.</p>
+  
+</article>
+</div>
+</section>
+
+
+<section id="pages">
+  <h2>Pages</h2>
+  <p class="note">Input clicks and impressions come from the URL file. migcheck does not measure traffic.</p>
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">Result</th>
+        <th scope="col">Old URL</th>
+        <th scope="col">Final</th>
+        <th scope="col">Issues</th>
+        <th scope="col">Input clicks</th>
+      </tr>
+    </thead>
+    <tbody>
+      
+<tr data-filter="https://old.journal.test/">
+  <td><span class="result pass">pass</span></td>
+  <td class="url">https://old.journal.test/</td>
+  <td class="url">https://new.journal.test/</td>
+  <td>—</td>
+  <td>420</td>
+</tr>
+
+
+<tr data-filter="https://old.journal.test/about/">
+  <td><span class="result warn">warn</span></td>
+  <td class="url">https://old.journal.test/about/</td>
+  <td class="url">https://new.journal.test/about</td>
+  <td>canonical_missing</td>
+  <td>80</td>
+</tr>
+
+
+<tr data-filter="https://old.journal.test/blog/2021/05/12/shipping-static/">
+  <td><span class="result pass">pass</span></td>
+  <td class="url">https://old.journal.test/blog/2021/05/12/shipping-static/</td>
+  <td class="url">https://new.journal.test/blog/shipping-static/</td>
+  <td>—</td>
+  <td>260</td>
+</tr>
+
+
+<tr data-filter="https://old.journal.test/blog/2020/01/03/wordpress-to-jamstack/">
+  <td><span class="result fail">fail</span></td>
+  <td class="url">https://old.journal.test/blog/2020/01/03/wordpress-to-jamstack/</td>
+  <td class="url">https://new.journal.test/blog/wordpress-to-jamstack/</td>
+  <td>temporary_redirect redirect_chain sitemap_missing</td>
+  <td>190</td>
+</tr>
+
+
+<tr data-filter="https://old.journal.test/blog/2019/08/01/old-seo-checklist/">
+  <td><span class="result fail">fail</span></td>
+  <td class="url">https://old.journal.test/blog/2019/08/01/old-seo-checklist/</td>
+  <td class="url">https://new.journal.test/</td>
+  <td>redirect_homepage sitemap_missing</td>
+  <td>800</td>
+</tr>
+
+
+<tr data-filter="https://old.journal.test/contact/">
+  <td><span class="result fail">fail</span></td>
+  <td class="url">https://old.journal.test/contact/</td>
+  <td class="url">https://new.journal.test/contact/</td>
+  <td>http_404 sitemap_missing</td>
+  <td>70</td>
+</tr>
+
+
+<tr data-filter="https://old.journal.test/blog/2018/02/11/redirect-loops/">
+  <td><span class="result fail">fail</span></td>
+  <td class="url">https://old.journal.test/blog/2018/02/11/redirect-loops/</td>
+  <td class="url">https://new.journal.test/blog/2018/02/11/redirect-loops/</td>
+  <td>redirect_loop sitemap_missing</td>
+  <td>30</td>
+</tr>
+
+
+<tr data-filter="https://old.journal.test/services/audits/">
+  <td><span class="result fail">fail</span></td>
+  <td class="url">https://old.journal.test/services/audits/</td>
+  <td class="url">http://new.journal.test/services/seo-audits/</td>
+  <td>protocol_downgrade</td>
+  <td>110</td>
+</tr>
+
+
+<tr data-filter="https://old.journal.test/category/seo/">
+  <td><span class="result fail">fail</span></td>
+  <td class="url">https://old.journal.test/category/seo/</td>
+  <td class="url">https://new.journal.test/category/seo/</td>
+  <td>not_redirected robots_disallow</td>
+  <td>150</td>
+</tr>
+
+
+<tr data-filter="https://old.journal.test/blog/2017/07/04/thin-page/">
+  <td><span class="result fail">fail</span></td>
+  <td class="url">https://old.journal.test/blog/2017/07/04/thin-page/</td>
+  <td class="url">https://new.journal.test/blog/thin-page/</td>
+  <td>noindex canonical_mismatch title_changed meta_description_missing h1_missing word_count_drop sitemap_lists_noindex</td>
+  <td>55</td>
+</tr>
+
+
+<tr data-filter="https://old.journal.test/pricing/">
+  <td><span class="result fail">fail</span></td>
+  <td class="url">https://old.journal.test/pricing/</td>
+  <td class="url">https://new.journal.test/pricing/</td>
+  <td>http_404</td>
+  <td>95</td>
+</tr>
+
+
+<tr data-filter="https://old.journal.test/welcome.html">
+  <td><span class="result warn">warn</span></td>
+  <td class="url">https://old.journal.test/welcome.html</td>
+  <td class="url">https://new.journal.test/welcome.html</td>
+  <td>meta_refresh sitemap_missing</td>
+  <td>15</td>
+</tr>
+
+
+<tr data-filter="https://old.journal.test/account/login/">
+  <td><span class="result fail">fail</span></td>
+  <td class="url">https://old.journal.test/account/login/</td>
+  <td class="url">https://new.journal.test/account/login/</td>
+  <td>http_5xx</td>
+  <td>5</td>
+</tr>
+
+
+<tr data-filter="https://old.journal.test/team/">
+  <td><span class="result warn">warn</span></td>
+  <td class="url">https://old.journal.test/team/</td>
+  <td class="url">https://new.journal.test/team</td>
+  <td>trailing_slash_mismatch</td>
+  <td>22</td>
+</tr>
+
+
+<tr data-filter="https://old.journal.test/archive/field-notes/">
+  <td><span class="result fail">fail</span></td>
+  <td class="url">https://old.journal.test/archive/field-notes/</td>
+  <td class="url">https://new.journal.test/archive/field-notes/</td>
+  <td>http_404</td>
+  <td>44</td>
+</tr>
+
+    </tbody>
+  </table>
+  <h3>Pages that are not a clean pass</h3>
+  
+<article class="page" data-filter="https://old.journal.test/about/">
+  <h3 class="url">https://old.journal.test/about/</h3>
+  <p><span class="result warn">warn</span>
+  Expected <span class="url">https://new.journal.test/about</span></p>
+  <ol class="hops"><li>301 https://new.journal.test/about/ → https://new.journal.test/about</li><li>200 https://new.journal.test/about</li></ol>
+  <ul><li><strong>canonical_missing</strong> https://new.journal.test/about has no canonical link.</li></ul>
+  
+<table class="signals">
+  <thead><tr><th scope="col"></th><th scope="col">Old</th><th scope="col">New</th></tr></thead>
+  <tbody><tr><th scope='row'>Title</th><td>About the journal</td><td>About the journal</td></tr><tr><th scope='row'>Description</th><td>How the fictional Northwind Journal is produced.</td><td>How the fictional Northwind Journal is produced.</td></tr><tr><th scope='row'>H1</th><td>About</td><td>About</td></tr><tr><th scope='row'>Words</th><td>163</td><td>163</td></tr><tr><th scope='row'>Canonical</th><td>—</td><td>—</td></tr><tr><th scope='row'>noindex</th><td>—</td><td>False</td></tr></tbody>
+</table>
+
+</article>
+
+
+<article class="page" data-filter="https://old.journal.test/blog/2020/01/03/wordpress-to-jamstack/">
+  <h3 class="url">https://old.journal.test/blog/2020/01/03/wordpress-to-jamstack/</h3>
+  <p><span class="result fail">fail</span>
+  Expected <span class="url">https://new.journal.test/blog/wordpress-to-jamstack/</span></p>
+  <ol class="hops"><li>302 https://new.journal.test/blog/2020/01/03/wordpress-to-jamstack/ → https://new.journal.test/blog/temp-wordpress/</li><li>301 https://new.journal.test/blog/temp-wordpress/ → https://new.journal.test/blog/wordpress-to-jamstack/</li><li>200 https://new.journal.test/blog/wordpress-to-jamstack/</li></ol>
+  <ul><li><strong>temporary_redirect</strong> A hop uses a temporary redirect (302, 303, or 307). Use 301 or 308 for a permanent move.</li><li><strong>redirect_chain</strong> Redirect chain of 2 hops. Collapse it to one 301.</li><li><strong>sitemap_missing</strong> https://new.journal.test/blog/wordpress-to-jamstack/ returned 200 and is missing from the new sitemap.</li></ul>
+  
+<table class="signals">
+  <thead><tr><th scope="col"></th><th scope="col">Old</th><th scope="col">New</th></tr></thead>
+  <tbody><tr><th scope='row'>Title</th><td>WordPress to a static site</td><td>WordPress to a static site</td></tr><tr><th scope='row'>Description</th><td>Fixture notes on permalink changes during a replatform.</td><td>Fixture notes on permalink changes during a replatform.</td></tr><tr><th scope='row'>H1</th><td>WordPress to a static site</td><td>WordPress to a static site</td></tr><tr><th scope='row'>Words</th><td>167</td><td>167</td></tr><tr><th scope='row'>Canonical</th><td>—</td><td>https://new.journal.test/blog/wordpress-to-jamstack/</td></tr><tr><th scope='row'>noindex</th><td>—</td><td>False</td></tr></tbody>
+</table>
+
+</article>
+
+
+<article class="page" data-filter="https://old.journal.test/blog/2019/08/01/old-seo-checklist/">
+  <h3 class="url">https://old.journal.test/blog/2019/08/01/old-seo-checklist/</h3>
+  <p><span class="result fail">fail</span>
+  Expected <span class="url">https://new.journal.test/guides/seo-checklist/</span></p>
+  <ol class="hops"><li>301 https://new.journal.test/blog/2019/08/01/old-seo-checklist/ → https://new.journal.test/</li><li>200 https://new.journal.test/</li></ol>
+  <ul><li><strong>redirect_homepage</strong> Redirects to the homepage (https://new.journal.test/). Search engines treat many-to-one homepage redirects as soft 404s.</li><li><strong>sitemap_missing</strong> https://new.journal.test/guides/seo-checklist/ returned 200 and is missing from the new sitemap.</li></ul>
+  
+<table class="signals">
+  <thead><tr><th scope="col"></th><th scope="col">Old</th><th scope="col">New</th></tr></thead>
+  <tbody><tr><th scope='row'>Title</th><td>An old SEO checklist</td><td>An old SEO checklist</td></tr><tr><th scope='row'>Description</th><td>Fixture checklist kept so a homepage redirect is visible.</td><td>Fixture checklist kept so a homepage redirect is visible.</td></tr><tr><th scope='row'>H1</th><td>An old SEO checklist</td><td>An old SEO checklist</td></tr><tr><th scope='row'>Words</th><td>166</td><td>166</td></tr><tr><th scope='row'>Canonical</th><td>—</td><td>https://new.journal.test/guides/seo-checklist/</td></tr><tr><th scope='row'>noindex</th><td>—</td><td>False</td></tr></tbody>
+</table>
+
+</article>
+
+
+<article class="page" data-filter="https://old.journal.test/contact/">
+  <h3 class="url">https://old.journal.test/contact/</h3>
+  <p><span class="result fail">fail</span>
+  Expected <span class="url">https://new.journal.test/contact</span></p>
+  <ol class="hops"><li>404 https://new.journal.test/contact/</li></ol>
+  <ul><li><strong>http_404</strong> HTTP 404 at https://new.journal.test/contact/.</li><li><strong>sitemap_missing</strong> https://new.journal.test/contact returned 200 and is missing from the new sitemap.</li></ul>
+  
+<table class="signals">
+  <thead><tr><th scope="col"></th><th scope="col">Old</th><th scope="col">New</th></tr></thead>
+  <tbody><tr><th scope='row'>Title</th><td>Contact</td><td>Contact</td></tr><tr><th scope='row'>Description</th><td>Fixture contact page for a redirect that was not deployed.</td><td>Fixture contact page for a redirect that was not deployed.</td></tr><tr><th scope='row'>H1</th><td>Contact</td><td>Contact</td></tr><tr><th scope='row'>Words</th><td>163</td><td>163</td></tr><tr><th scope='row'>Canonical</th><td>—</td><td>https://new.journal.test/contact</td></tr><tr><th scope='row'>noindex</th><td>—</td><td>False</td></tr></tbody>
+</table>
+
+</article>
+
+
+<article class="page" data-filter="https://old.journal.test/blog/2018/02/11/redirect-loops/">
+  <h3 class="url">https://old.journal.test/blog/2018/02/11/redirect-loops/</h3>
+  <p><span class="result fail">fail</span>
+  Expected <span class="url">https://new.journal.test/blog/redirect-loops/</span></p>
+  <ol class="hops"><li>301 https://new.journal.test/blog/2018/02/11/redirect-loops/ → https://new.journal.test/blog/2018/02/11/redirect-loops/</li></ol>
+  <ul><li><strong>redirect_loop</strong> Redirect loop. Chain: 301 https://new.journal.test/blog/2018/02/11/redirect-loops/ -&gt; https://new.journal.test/blog/2018/02/11/redirect-loops/.</li><li><strong>sitemap_missing</strong> https://new.journal.test/blog/redirect-loops/ returned 200 and is missing from the new sitemap.</li></ul>
+  
+<table class="signals">
+  <thead><tr><th scope="col"></th><th scope="col">Old</th><th scope="col">New</th></tr></thead>
+  <tbody><tr><th scope='row'>Title</th><td>Redirect loops</td><td>Redirect loops</td></tr><tr><th scope='row'>Description</th><td>Fixture page whose new server redirects to itself.</td><td>Fixture page whose new server redirects to itself.</td></tr><tr><th scope='row'>H1</th><td>Redirect loops</td><td>Redirect loops</td></tr><tr><th scope='row'>Words</th><td>164</td><td>164</td></tr><tr><th scope='row'>Canonical</th><td>—</td><td>https://new.journal.test/blog/redirect-loops/</td></tr><tr><th scope='row'>noindex</th><td>—</td><td>False</td></tr></tbody>
+</table>
+
+</article>
+
+
+<article class="page" data-filter="https://old.journal.test/services/audits/">
+  <h3 class="url">https://old.journal.test/services/audits/</h3>
+  <p><span class="result fail">fail</span>
+  Expected <span class="url">https://new.journal.test/services/seo-audits/</span></p>
+  <ol class="hops"><li>301 https://new.journal.test/services/audits/ → http://new.journal.test/services/seo-audits/</li><li>200 http://new.journal.test/services/seo-audits/</li></ol>
+  <ul><li><strong>protocol_downgrade</strong> Landed on http://new.journal.test/services/seo-audits/ but the new host is https. The redirect drops the connection to cleartext.</li></ul>
+  
+<table class="signals">
+  <thead><tr><th scope="col"></th><th scope="col">Old</th><th scope="col">New</th></tr></thead>
+  <tbody><tr><th scope='row'>Title</th><td>SEO audits</td><td>SEO audits</td></tr><tr><th scope='row'>Description</th><td>Fixture service page with a protocol downgrade.</td><td>Fixture service page with a protocol downgrade.</td></tr><tr><th scope='row'>H1</th><td>SEO audits</td><td>SEO audits</td></tr><tr><th scope='row'>Words</th><td>164</td><td>164</td></tr><tr><th scope='row'>Canonical</th><td>—</td><td>https://new.journal.test/services/seo-audits/</td></tr><tr><th scope='row'>noindex</th><td>—</td><td>False</td></tr></tbody>
+</table>
+
+</article>
+
+
+<article class="page" data-filter="https://old.journal.test/category/seo/">
+  <h3 class="url">https://old.journal.test/category/seo/</h3>
+  <p><span class="result fail">fail</span>
+  Expected <span class="url">https://new.journal.test/topics/seo/</span></p>
+  <ol class="hops"><li>200 https://new.journal.test/category/seo/</li></ol>
+  <ul><li><strong>not_redirected</strong> No redirect was served. Expected https://new.journal.test/topics/seo/ and the server returned 200 for https://new.journal.test/category/seo/.</li><li><strong>robots_disallow</strong> robots.txt user-agent &#x27;*&#x27; disallows /topics/, which blocks https://new.journal.test/topics/seo/.</li></ul>
+  
+<table class="signals">
+  <thead><tr><th scope="col"></th><th scope="col">Old</th><th scope="col">New</th></tr></thead>
+  <tbody><tr><th scope='row'>Title</th><td>SEO</td><td>SEO</td></tr><tr><th scope='row'>Description</th><td>Fixture category page that should redirect to a topic.</td><td>Fixture category page that should redirect to a topic.</td></tr><tr><th scope='row'>H1</th><td>SEO</td><td>SEO</td></tr><tr><th scope='row'>Words</th><td>163</td><td>163</td></tr><tr><th scope='row'>Canonical</th><td>—</td><td>https://new.journal.test/topics/seo/</td></tr><tr><th scope='row'>noindex</th><td>—</td><td>False</td></tr></tbody>
+</table>
+
+</article>
+
+
+<article class="page" data-filter="https://old.journal.test/blog/2017/07/04/thin-page/">
+  <h3 class="url">https://old.journal.test/blog/2017/07/04/thin-page/</h3>
+  <p><span class="result fail">fail</span>
+  Expected <span class="url">https://new.journal.test/blog/thin-page/</span></p>
+  <ol class="hops"><li>301 https://new.journal.test/blog/2017/07/04/thin-page/ → https://new.journal.test/blog/thin-page/</li><li>200 https://new.journal.test/blog/thin-page/</li></ol>
+  <ul><li><strong>noindex</strong> https://new.journal.test/blog/thin-page/ sends noindex and will not be indexed.</li><li><strong>canonical_mismatch</strong> Canonical is https://old.journal.test/blog/2017/07/04/thin-page/, which does not match https://new.journal.test/blog/thin-page/.</li><li><strong>title_changed</strong> Title changed from &#x27;A longer article about redirects&#x27; to &#x27;Notes&#x27; (similarity 0.16).</li><li><strong>meta_description_missing</strong> The old page had a meta description and the new page does not.</li><li><strong>h1_missing</strong> The new page has no H1.</li><li><strong>word_count_drop</strong> Word count fell from 167 to 18 (89% drop; threshold 30%).</li><li><strong>sitemap_lists_noindex</strong> https://new.journal.test/blog/thin-page/ is in the new sitemap and sends noindex.</li></ul>
+  
+<table class="signals">
+  <thead><tr><th scope="col"></th><th scope="col">Old</th><th scope="col">New</th></tr></thead>
+  <tbody><tr><th scope='row'>Title</th><td>A longer article about redirects</td><td>Notes</td></tr><tr><th scope='row'>Description</th><td>A long fixture description that the new template drops entirely from the page.</td><td>—</td></tr><tr><th scope='row'>H1</th><td>A longer article about redirects</td><td>—</td></tr><tr><th scope='row'>Words</th><td>167</td><td>18</td></tr><tr><th scope='row'>Canonical</th><td>—</td><td>https://old.journal.test/blog/2017/07/04/thin-page/</td></tr><tr><th scope='row'>noindex</th><td>—</td><td>True</td></tr></tbody>
+</table>
+
+</article>
+
+
+<article class="page" data-filter="https://old.journal.test/pricing/">
+  <h3 class="url">https://old.journal.test/pricing/</h3>
+  <p><span class="result fail">fail</span>
+  Expected <span class="url">https://new.journal.test/pricing/</span></p>
+  <ol class="hops"><li>404 https://new.journal.test/pricing/</li></ol>
+  <ul><li><strong>http_404</strong> HTTP 404 at https://new.journal.test/pricing/.</li></ul>
+  
+<table class="signals">
+  <thead><tr><th scope="col"></th><th scope="col">Old</th><th scope="col">New</th></tr></thead>
+  <tbody><tr><th scope='row'>Title</th><td>Pricing for the print edition</td><td>—</td></tr><tr><th scope='row'>Description</th><td>Fixture pricing page with no redirect and no replacement path.</td><td>—</td></tr><tr><th scope='row'>H1</th><td>Pricing for the print edition</td><td>—</td></tr><tr><th scope='row'>Words</th><td>167</td><td>—</td></tr><tr><th scope='row'>Canonical</th><td>—</td><td>—</td></tr><tr><th scope='row'>noindex</th><td>—</td><td>—</td></tr></tbody>
+</table>
+
+</article>
+
+
+<article class="page" data-filter="https://old.journal.test/welcome.html">
+  <h3 class="url">https://old.journal.test/welcome.html</h3>
+  <p><span class="result warn">warn</span>
+  Expected <span class="url">https://new.journal.test/welcome.html</span></p>
+  <ol class="hops"><li>200 https://new.journal.test/welcome.html</li></ol>
+  <ul><li><strong>meta_refresh</strong> https://new.journal.test/welcome.html returns 200 and meta-refreshes to https://new.journal.test/about. Replace it with a 301.</li><li><strong>sitemap_missing</strong> https://new.journal.test/welcome.html returned 200 and is missing from the new sitemap.</li></ul>
+  
+<table class="signals">
+  <thead><tr><th scope="col"></th><th scope="col">Old</th><th scope="col">New</th></tr></thead>
+  <tbody><tr><th scope='row'>Title</th><td>Welcome</td><td>Welcome</td></tr><tr><th scope='row'>Description</th><td>Fixture page that still uses a meta refresh.</td><td>Fixture page that still uses a meta refresh.</td></tr><tr><th scope='row'>H1</th><td>Welcome</td><td>Welcome</td></tr><tr><th scope='row'>Words</th><td>163</td><td>163</td></tr><tr><th scope='row'>Canonical</th><td>—</td><td>https://new.journal.test/welcome.html</td></tr><tr><th scope='row'>noindex</th><td>—</td><td>False</td></tr></tbody>
+</table>
+
+</article>
+
+
+<article class="page" data-filter="https://old.journal.test/account/login/">
+  <h3 class="url">https://old.journal.test/account/login/</h3>
+  <p><span class="result fail">fail</span>
+  Expected <span class="url">https://new.journal.test/account/login/</span></p>
+  <ol class="hops"><li>500 https://new.journal.test/account/login/</li></ol>
+  <ul><li><strong>http_5xx</strong> HTTP 500 at https://new.journal.test/account/login/.</li></ul>
+  
+<table class="signals">
+  <thead><tr><th scope="col"></th><th scope="col">Old</th><th scope="col">New</th></tr></thead>
+  <tbody><tr><th scope='row'>Title</th><td>Account login</td><td>—</td></tr><tr><th scope='row'>Description</th><td>Fixture account route that the static host answers with an error.</td><td>—</td></tr><tr><th scope='row'>H1</th><td>Account login</td><td>—</td></tr><tr><th scope='row'>Words</th><td>164</td><td>—</td></tr><tr><th scope='row'>Canonical</th><td>—</td><td>—</td></tr><tr><th scope='row'>noindex</th><td>—</td><td>—</td></tr></tbody>
+</table>
+
+</article>
+
+
+<article class="page" data-filter="https://old.journal.test/team/">
+  <h3 class="url">https://old.journal.test/team/</h3>
+  <p><span class="result warn">warn</span>
+  Expected <span class="url">https://new.journal.test/team/</span></p>
+  <ol class="hops"><li>301 https://new.journal.test/team/ → https://new.journal.test/team</li><li>200 https://new.journal.test/team</li></ol>
+  <ul><li><strong>trailing_slash_mismatch</strong> Trailing slash differs. Expected https://new.journal.test/team/ and landed on https://new.journal.test/team.</li></ul>
+  
+<table class="signals">
+  <thead><tr><th scope="col"></th><th scope="col">Old</th><th scope="col">New</th></tr></thead>
+  <tbody><tr><th scope='row'>Title</th><td>The team</td><td>The team</td></tr><tr><th scope='row'>Description</th><td>Fixture team page that only changes its trailing slash.</td><td>Fixture team page that only changes its trailing slash.</td></tr><tr><th scope='row'>H1</th><td>The team</td><td>The team</td></tr><tr><th scope='row'>Words</th><td>164</td><td>164</td></tr><tr><th scope='row'>Canonical</th><td>—</td><td>https://new.journal.test/team</td></tr><tr><th scope='row'>noindex</th><td>—</td><td>False</td></tr></tbody>
+</table>
+
+</article>
+
+
+<article class="page" data-filter="https://old.journal.test/archive/field-notes/">
+  <h3 class="url">https://old.journal.test/archive/field-notes/</h3>
+  <p><span class="result fail">fail</span>
+  Expected <span class="url">https://new.journal.test/archive/field-notes/</span></p>
+  <ol class="hops"><li>404 https://new.journal.test/archive/field-notes/</li></ol>
+  <ul><li><strong>http_404</strong> HTTP 404 at https://new.journal.test/archive/field-notes/.</li></ul>
+  
+<table class="signals">
+  <thead><tr><th scope="col"></th><th scope="col">Old</th><th scope="col">New</th></tr></thead>
+  <tbody><tr><th scope='row'>Title</th><td>Field notes from the pilot</td><td>—</td></tr><tr><th scope='row'>Description</th><td>Fixture notes whose slug survives under a new directory.</td><td>—</td></tr><tr><th scope='row'>H1</th><td>Field notes from the pilot</td><td>—</td></tr><tr><th scope='row'>Words</th><td>167</td><td>—</td></tr><tr><th scope='row'>Canonical</th><td>—</td><td>—</td></tr><tr><th scope='row'>noindex</th><td>—</td><td>—</td></tr></tbody>
+</table>
+
+</article>
+
+</section>
+
+
+<section id="map">
+  <h2>Redirect map</h2>
+  <p class="note">First match wins. Wildcard targets are not requested individually.</p>
+  <table>
+    <thead>
+      <tr><th scope="col">Line</th><th scope="col">Source</th><th scope="col">Target</th>
+      <th scope="col">Status</th><th scope="col">Wildcard</th><th scope="col">Note</th></tr>
+    </thead>
+    <tbody><tr><td>5</td><td class='url'>/about/</td><td class='url'>/about</td><td>301</td><td></td><td></td></tr><tr><td>6</td><td class='url'>/about/</td><td class='url'>/about</td><td>301</td><td></td><td></td></tr><tr><td>7</td><td class='url'>/blog/2021/05/12/shipping-static/</td><td class='url'>/blog/shipping-static/</td><td>301</td><td></td><td></td></tr><tr><td>8</td><td class='url'>/blog/2020/01/03/wordpress-to-jamstack/</td><td class='url'>/blog/wordpress-to-jamstack/</td><td>301</td><td></td><td></td></tr><tr><td>9</td><td class='url'>/blog/2019/08/01/old-seo-checklist/</td><td class='url'>/guides/seo-checklist/</td><td>301</td><td></td><td></td></tr><tr><td>10</td><td class='url'>/contact/</td><td class='url'>/contact</td><td>301</td><td></td><td></td></tr><tr><td>11</td><td class='url'>/blog/2018/02/11/redirect-loops/</td><td class='url'>/blog/redirect-loops/</td><td>301</td><td></td><td></td></tr><tr><td>12</td><td class='url'>/services/audits/</td><td class='url'>/services/seo-audits/</td><td>301</td><td></td><td></td></tr><tr><td>13</td><td class='url'>/services/audits/</td><td class='url'>/services/site-audits/</td><td>301</td><td></td><td></td></tr><tr><td>14</td><td class='url'>/category/seo/</td><td class='url'>/topics/seo/</td><td>301</td><td></td><td></td></tr><tr><td>15</td><td class='url'>/blog/2017/07/04/thin-page/</td><td class='url'>/blog/thin-page/</td><td>301</td><td></td><td></td></tr><tr><td>16</td><td class='url'>/promo/</td><td class='url'>/offers/spring/</td><td>301</td><td></td><td></td></tr><tr><td>17</td><td class='url'>/legacy/a</td><td class='url'>/legacy/b</td><td>301</td><td></td><td></td></tr><tr><td>18</td><td class='url'>/legacy/b</td><td class='url'>/legacy/a</td><td>301</td><td></td><td></td></tr><tr><td>19</td><td class='url'>/blog/*</td><td class='url'>/notes/:splat</td><td>301</td><td>yes</td><td></td></tr><tr><td>20</td><td class='url'>/blog/2016/03/03/specific-post/</td><td class='url'>/blog/specific-post/</td><td>301</td><td></td><td></td></tr></tbody>
+  </table>
+</section>
+
+
+<section id="sitemap">
+  <h2>New sitemap</h2>
+  <p>9 URL(s). Membership ignores scheme and a single trailing slash.</p>
+  <h3>In the new sitemap, not a destination of the old list</h3>
+  <ul><li class='url'>https://new.journal.test/plans/</li><li class='url'>https://new.journal.test/journal/field-notes/</li></ul>
+  <h3>All new sitemap URLs</h3>
+  <ul><li class='url'>https://new.journal.test/</li><li class='url'>https://new.journal.test/about</li><li class='url'>https://new.journal.test/blog/shipping-static/</li><li class='url'>https://new.journal.test/blog/thin-page/</li><li class='url'>https://new.journal.test/topics/seo/</li><li class='url'>https://new.journal.test/plans/</li><li class='url'>https://new.journal.test/journal/field-notes/</li><li class='url'>https://new.journal.test/services/seo-audits/</li><li class='url'>https://new.journal.test/team</li></ul>
+</section>
+
+
+<section id="robots">
+  <h2>robots.txt</h2>
+  <p class="note">Rules are the group Googlebot would use: the longest matching user-agent, otherwise *.</p>
+  <pre>User-agent: *
+Allow: /topics/seo/public
+Disallow: /topics/
+Disallow: /wp-admin/
+
+Sitemap: https://new.journal.test/sitemap.xml
+</pre>
+</section>
+
+
+<section id="suggestions">
+  <h2>Suggestions</h2>
+  <p class="note">Suggestions do not change readiness. They are similarity matches for unmapped URLs that did not land.</p>
+  
+<table>
+  <thead>
+    <tr><th scope="col">Old URL</th><th scope="col">Candidate</th><th scope="col">Score</th>
+    <th scope="col">Via</th><th scope="col">Old label</th><th scope="col">Candidate label</th></tr>
+  </thead>
+  <tbody><tr><td class='url'>https://old.journal.test/archive/field-notes/</td><td class='url'>https://new.journal.test/journal/field-notes/</td><td>1.00</td><td>slug</td><td>slug: field notes</td><td>slug: field notes</td></tr><tr><td class='url'>https://old.journal.test/pricing/</td><td class='url'>https://new.journal.test/plans/</td><td>0.83</td><td>title</td><td>title: Pricing for the print edition</td><td>title: Pricing for the print edition and archive</td></tr></tbody>
+</table>
+
+</section>
+
+
+<section id="method">
+  <h2>How a result was decided</h2>
+  <ul>
+    <li>Staging mode requests each old path on the new host. Live mode requests the old URL as published.</li>
+    <li>Redirects are followed one hop at a time. A loop or the hop cap stops the walk. The client does not hide hops.</li>
+    <li>With a redirect map, the expected page is the first matching rule. Without one, the same path on the new host is expected.</li>
+    <li>A single 301 or 308 to that page is the permanent-move shape. 302, 303, and 307 are flagged even if the page is right.</li>
+    <li>Homepage redirects from any other path are soft-404 risks. Protocol and trailing-slash differences are separate from a wrong path.</li>
+    <li>Content is read from the response HTML. JavaScript is not executed. Word count is whitespace-separated visible text, excluding head, script, and style.</li>
+    <li>When a rule names a destination, content is compared to that destination even if the server currently sends people somewhere else.</li>
+    <li>Readiness is BLOCKED on any critical issue, NEEDS REVIEW on high issues, READY WITH NOTES on medium or low issues, and READY otherwise. Info and suggestions do not block.</li>
+  </ul>
+  <h3>Issue codes</h3>
+  <dl class="glossary"><dt>http_404</dt><dd><span class='sev critical'>critical</span> The probed URL, or the page it redirected to, returned 404.</dd><dt>http_5xx</dt><dd><span class='sev critical'>critical</span> The server returned a 5xx status, so the URL cannot be migrated cleanly.</dd><dt>http_4xx</dt><dd><span class='sev high'>high</span> The server returned a 4xx status other than 404.</dd><dt>fetch_error</dt><dd><span class='sev high'>high</span> The URL could not be fetched. Nothing about that URL was verified.</dd><dt>redirect_loop</dt><dd><span class='sev critical'>critical</span> The redirect chain visits the same URL twice.</dd><dt>redirect_homepage</dt><dd><span class='sev critical'>critical</span> A non-home URL redirects to the homepage. Search engines treat that pattern as a soft 404.</dd><dt>redirect_chain</dt><dd><span class='sev high'>high</span> More than one redirect sits between the old URL and the final page. Collapse it to one hop.</dd><dt>temporary_redirect</dt><dd><span class='sev high'>high</span> A 302, 303, or 307 is a temporary redirect. A permanent move should be 301 or 308.</dd><dt>too_many_redirects</dt><dd><span class='sev critical'>critical</span> The chain exceeded the hop limit and never settled on a document.</dd><dt>redirect_missing_location</dt><dd><span class='sev high'>high</span> A redirect status came back without a Location header.</dd><dt>bad_redirect_target</dt><dd><span class='sev high'>high</span> A Location header used a scheme other than http or https.</dd><dt>not_redirected</dt><dd><span class='sev high'>high</span> The server returned 200 for the old path instead of redirecting to the mapped page.</dd><dt>wrong_target</dt><dd><span class='sev high'>high</span> The redirect landed on a different path from the one the map (or the same-path move) expects.</dd><dt>redirect_offsite</dt><dd><span class='sev high'>high</span> The redirect left the new host.</dd><dt>host_mismatch</dt><dd><span class='sev high'>high</span> The final host differs from the expected host by a www prefix.</dd><dt>protocol_downgrade</dt><dd><span class='sev high'>high</span> The final URL is http while the new host is https.</dd><dt>protocol_upgrade</dt><dd><span class='sev info'>info</span> The final URL is https while the expected URL was http.</dd><dt>trailing_slash_mismatch</dt><dd><span class='sev low'>low</span> The final path and the expected path differ only by a trailing slash.</dd><dt>query_mismatch</dt><dd><span class='sev medium'>medium</span> The path matches, but the query string does not.</dd><dt>unexpected_status</dt><dd><span class='sev medium'>medium</span> The response status was not a document, a redirect, or an error migcheck classifies.</dd><dt>forced_status_mismatch</dt><dd><span class='sev medium'>medium</span> A redirect rule forces a 4xx, and the server returned something else.</dd><dt>noindex</dt><dd><span class='sev critical'>critical</span> The new page sends noindex, in HTML or in an X-Robots-Tag header.</dd><dt>noindex_kept</dt><dd><span class='sev info'>info</span> Both the old page and the new page send noindex.</dd><dt>canonical_missing</dt><dd><span class='sev low'>low</span> The new HTML has no rel=canonical. Google can infer one, but a redesign should set it.</dd><dt>canonical_mismatch</dt><dd><span class='sev high'>high</span> The canonical URL points at a different host or path than the page itself.</dd><dt>title_missing</dt><dd><span class='sev high'>high</span> The new page has no title element.</dd><dt>title_changed</dt><dd><span class='sev medium'>medium</span> The title changed beyond a site-name suffix. Severity falls to low when the titles are still close.</dd><dt>meta_description_missing</dt><dd><span class='sev medium'>medium</span> The old page had a meta description and the new page does not.</dd><dt>meta_description_shortened</dt><dd><span class='sev low'>low</span> The meta description shrank to 60% or less of the old length.</dd><dt>h1_missing</dt><dd><span class='sev medium'>medium</span> The new page has no H1.</dd><dt>h1_changed</dt><dd><span class='sev low'>low</span> The H1 text changed.</dd><dt>multiple_h1</dt><dd><span class='sev low'>low</span> The new page has more than one H1.</dd><dt>word_count_drop</dt><dd><span class='sev medium'>medium</span> Visible word count fell by at least the configured threshold. Drops of 50% or more are high.</dd><dt>meta_refresh</dt><dd><span class='sev medium'>medium</span> The page returns 200 and uses a meta refresh. Replace it with a 301.</dd><dt>body_truncated</dt><dd><span class='sev info'>info</span> The response body was longer than the byte cap, so the word count was not compared.</dd><dt>map_duplicate</dt><dd><span class='sev low'>low</span> The same source pattern appears twice with the same target and status. First match wins.</dd><dt>map_conflict</dt><dd><span class='sev high'>high</span> The same source pattern appears twice with a different target or status. First match wins.</dd><dt>map_cycle</dt><dd><span class='sev high'>high</span> Literal rules send a path back to itself.</dd><dt>map_shadowed</dt><dd><span class='sev medium'>medium</span> An earlier rule already matches every path this rule could match, so this rule never runs.</dd><dt>map_target_404</dt><dd><span class='sev critical'>critical</span> A concrete redirect target returns 404 or 410.</dd><dt>map_target_error</dt><dd><span class='sev high'>high</span> A concrete redirect target could not be fetched or returned an error other than 404.</dd><dt>map_parse_error</dt><dd><span class='sev medium'>medium</span> A line in the redirect file could not be parsed and was skipped.</dd><dt>map_unsupported</dt><dd><span class='sev info'>info</span> A rule uses a feature migcheck does not simulate (conditions, mid-path stars, or query matches).</dd><dt>map_temporary</dt><dd><span class='sev medium'>medium</span> A rule uses a temporary status. Permanent moves should be 301 or 308.</dd><dt>map_offsite_target</dt><dd><span class='sev medium'>medium</span> A rule sends the URL to a host other than the new site.</dd><dt>map_targets_homepage</dt><dd><span class='sev critical'>critical</span> A rule sends a non-home path to the homepage.</dd><dt>map_rewrite</dt><dd><span class='sev info'>info</span> A rule uses status 200, which is an internal rewrite rather than a client redirect.</dd><dt>map_force_flag</dt><dd><span class='sev info'>info</span> A Netlify or Cloudflare rule uses the force flag. migcheck does not see the file tree.</dd><dt>robots_disallow</dt><dd><span class='sev critical'>critical</span> robots.txt blocks a URL that the migration expects to be reachable.</dd><dt>robots_blocks_all</dt><dd><span class='sev critical'>critical</span> robots.txt disallows the whole site.</dd><dt>robots_missing</dt><dd><span class='sev medium'>medium</span> The new host has no robots.txt. Crawling is allowed, but confirm that was intentional.</dd><dt>robots_unreadable</dt><dd><span class='sev high'>high</span> robots.txt could not be fetched or parsed.</dd><dt>sitemap_missing</dt><dd><span class='sev medium'>medium</span> An indexable destination returned 200 and is not in the new sitemap.</dd><dt>sitemap_missing_file</dt><dd><span class='sev high'>high</span> The new sitemap URL returned 404.</dd><dt>sitemap_unreadable</dt><dd><span class='sev high'>high</span> The new sitemap was fetched but could not be parsed.</dd><dt>sitemap_lists_noindex</dt><dd><span class='sev medium'>medium</span> The new sitemap lists a URL that also sends noindex.</dd><dt>sitemap_extra</dt><dd><span class='sev info'>info</span> The new sitemap contains URLs that are not destinations of the old URL list. This is informational.</dd><dt>invalid_url</dt><dd><span class='sev high'>high</span> A supplied URL was not absolute http or https and was skipped.</dd><dt>url_credentials</dt><dd><span class='sev low'>low</span> A URL contained userinfo. It was stripped before the request.</dd></dl>
+</section>
+
+</main>
+<footer>
+Generated by migcheck 0.1.0 at 2026-11-25T01:14:50Z. 
+Statuses and HTML signals were read from responses. 
+This report does not estimate traffic or rankings.
+</footer>
+
+<script>
+const box = document.getElementById("q");
+if (box) {
+  box.addEventListener("input", () => {
+    const query = box.value.trim().toLowerCase();
+    document.querySelectorAll("[data-filter]").forEach((node) => {
+      const haystack = node.getAttribute("data-filter") || "";
+      node.hidden = Boolean(query) && !haystack.includes(query);
+    });
+  });
+}
+</script>
+
+</body>
+</html>
